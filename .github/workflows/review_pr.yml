@@ -1,0 +1,26 @@
+name: Review Genie
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  trigger-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Construct and output URL
+        id: construct_url
+        run: |
+          URL="https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
+          echo "Constructed URL: $URL"
+          echo "url=$URL" >> $GITHUB_OUTPUT
+
+      - name: Trigger Review Genie
+        run: |
+          curl -X 'POST' \
+            'https://review-genie.arohalabs.tech/review' \
+            -H 'accept: application/json' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "url": "${{ steps.construct_url.outputs.url }}"
+            }'
