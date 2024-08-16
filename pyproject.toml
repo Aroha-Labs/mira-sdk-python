@@ -1,0 +1,28 @@
+[project]
+name = "mira-python-sdk"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "sarim2000", email = "sarimbleedblue@gmail.com"},
+]
+dependencies = [
+    "requests>=2.32.3",
+    "pyyaml>=6.0.2",
+    "llama-parse>=0.4.9",
+    "langchain-community>=0.2.12",
+    "langchain-chroma>=0.1.2",
+    "langchain-openai>=0.1.21",
+    "unstructured[md]>=0.15.1",
+    "libmagic>=1.0",
+]
+requires-python = "==3.10.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
+
+[tool.pdm.scripts]
+_.env_file = ".env"
+dev = "python src/mira_python_sdk/main.py"
