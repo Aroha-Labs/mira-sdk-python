@@ -1,0 +1,8 @@
+klokc_flow:
+  retriever:
+    name: hapchap_content_source
+    filter: prompt_engineering
+  model:
+    name: llama3:instruct
+  prompt:
+    id: extract_entities
