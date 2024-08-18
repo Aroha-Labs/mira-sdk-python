@@ -1,9 +1,0 @@
-klokc_flow:
-  retriever:
-    name: klok
-  model:
-    name: llama3:instruct
-  prompt:
-    id: prompt1
-  system_prompt:
-    id: prompt2

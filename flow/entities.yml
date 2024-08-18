@@ -1,0 +1,11 @@
+id: klokc_flow_001
+tasks:
+  data: # knowledge
+    src: src/data/ 
+  model:
+    name: mistral:instruct
+  prompt:
+    id: entity_extraction # name as id
+
+# get all contents --> flow
+# retriever --> flow

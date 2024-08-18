@@ -1,0 +1,5 @@
+{
+  "yaml.schemas": {
+    "https://json.schemastore.org/kestra-0.18.json": "file:///Users/sarim/projects/work/mira-python-sdk/flows/create_entities.yml"
+  }
+}

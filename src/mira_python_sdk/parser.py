@@ -156,7 +156,7 @@ rag_pipeline.add_component("prompt", prompt)
 rag_pipeline.add_component("generator", generator)
 rag_pipeline.connect("retriever", "prompt")
 rag_pipeline.connect("prompt", "generator")
-
+  
 # Ask a question
 question = "Who lives in Paris?"
 results = rag_pipeline.run(
