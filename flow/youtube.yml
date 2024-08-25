@@ -1,0 +1,10 @@
+model: gpt-4o
+system_prompt:
+  - content: You are a youtube video summarizer.
+user_prompt:
+  - content: Please summarize the following text
+parameter:
+  - url:
+      type: string
+      description: The URL of the youtube video
+# knowledge #empty for now

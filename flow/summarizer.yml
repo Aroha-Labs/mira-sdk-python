@@ -1,0 +1,9 @@
+model: gpt-4o
+system_prompt:
+  - content: You are a summarizer UI.
+user_prompt:
+  - content: Please summarize the following text
+parameter:
+  - path:
+      type: string
+      description: The file path to summarize
