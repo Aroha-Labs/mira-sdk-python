@@ -1,0 +1,24 @@
+name: SimpleTextGenerator
+description: Persona Impersonator
+resources:
+  prompts:
+    main_prompt: 'Generate a short story about {person} at {club}:'
+  knowledge:
+    writing_tips:
+      file: writing_tips.txt
+  models:
+    story_generator:
+      type: gpt-3.5-turbo
+components:
+  story_generator:
+    type: Generator
+    config:
+      prompt: '{resources.prompts.main_prompt}'
+      model: '{resources.models.story_generator}'
+flow:
+- story_generator:
+    inputs:
+    - person: request
+      club: request
+    outputs:
+    - target: response
