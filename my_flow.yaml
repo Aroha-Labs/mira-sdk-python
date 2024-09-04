@@ -1,14 +1,16 @@
 components:
   story_generator:
     config:
-      model: '{resources.models.gpt-3.5-turbo}'
-      prompt: '{resources.prompts.story_prompt}'
+      model: '{resources.models.gpt-4-turbo}'
+      prompt: '{resources.prompts.main_prompt}'
     type: Generator
 flow:
 - story_generator: {}
 resources:
   models:
-    gpt-3.5-turbo:
-      type: gpt-3.5-turbo
+    gpt-4-turbo:
+      type: gpt-4-turbo
   prompts:
-    story_prompt: Generate a story about {topic}
+    main_prompt: "@aroha-labs/klok/1.0.0"
+  prompt_source: "mira"
+
