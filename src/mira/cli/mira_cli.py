@@ -1,5 +1,7 @@
 import os
 import click
+
+from src.mira.constants import PROMPT_API_URL
 from ..client.mira_client import MiraClient
 import yaml
 import requests
@@ -73,7 +75,7 @@ def prompts(skip, limit, show, lists, prompt_name):
         return
 
     if show:      
-        url = f"https://prompt-mgmt-api.stg.arohalabs.dev/prompts/{prompt_name}"
+        url = f"{PROMPT_API_URL}/prompts/{prompt_name}"
         headers = {'accept': 'application/json'}
         
         try:
@@ -91,7 +93,7 @@ def prompts(skip, limit, show, lists, prompt_name):
         
         return
 
-    url = f"https://prompt-mgmt-api.stg.arohalabs.dev/prompts/?skip={skip}&limit={limit}"
+    url = f"{PROMPT_API_URL}/prompts/?skip={skip}&limit={limit}"
     headers = {'accept': 'application/json'}
     
     try:
