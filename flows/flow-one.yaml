@@ -1,0 +1,23 @@
+components:
+  story_generator:
+    config:
+      model: '{resources.models.story_generator}'
+      prompt: '{resources.prompts.main_prompt}'
+    type: Generator
+description: A basic flow for generating text using a prompt and a model
+flow:
+- story_generator:
+    inputs:
+    - topic: request
+    outputs:
+    - target: response
+name: SimpleTextGenerator
+resources:
+  knowledge:
+    writing_tips:
+      file: writing_tips.txt
+  models:
+    story_generator:
+      type: gpt-3.5-turbo
+  prompts:
+    main_prompt: 'Generate a short story about {topic}:'

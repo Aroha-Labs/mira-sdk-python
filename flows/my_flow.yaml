@@ -2,7 +2,7 @@ components:
   story_generator:
     config:
       model: '{resources.models.gpt-3.5-turbo}'
-      prompt: '{resources.prompts.story_prompt}'
+      prompt: '{resources.prompts.main_prompt}'
     type: Generator
 flow:
 - story_generator: {}
@@ -11,4 +11,5 @@ resources:
     gpt-3.5-turbo:
       type: gpt-3.5-turbo
   prompts:
-    story_prompt: Generate a story about {topic}
+    main_prompt: what is this?
+
