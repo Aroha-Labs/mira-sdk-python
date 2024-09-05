@@ -1,3 +1,6 @@
+from src.mira.cli.utils import take_user_input
+
+
 class Generator:
     def __init__(self, config, resource_manager):
         self.config = config
@@ -25,7 +28,15 @@ class Generator:
             raise ValueError(f"Model '{model_name}' not found in resources")
         return model
 
-    def execute(self, input_text):
-        prompt_content = self.prompt.get_content()
-        formatted_prompt = prompt_content.format(**input_text)
+    def execute(self, input_dict):
+        prompt_content, prompt_variables = self.prompt.get_content()
+        if prompt_variables:
+            for prompt_key, variable_type in prompt_variables.items():
+                if prompt_key not in input_dict:
+                    variable_input = take_user_input.callback(prompt_key, variable_type)
+                    input_dict[prompt_key] = variable_input
+                    # TODO: do variable type validation here
+
+        formatted_prompt = prompt_content.format(**input_dict)
+        print(formatted_prompt)
         return self.model.generate(formatted_prompt)

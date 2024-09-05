@@ -16,6 +16,11 @@ class FlowBuilder:
             self.config["resources"][resource_type] = {}
         self.config["resources"][resource_type][name] = config
 
+    def add_prompt(self, prompt_list):
+        if not self.config["resources"].get("prompts"):
+            self.config["resources"]["prompts"] = {}
+        self.config["resources"]["prompts"] = prompt_list
+
     def add_component(self, name, component_type, config):
         self.config["components"][name] = {"type": component_type, "config": config}
 

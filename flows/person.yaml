@@ -2,7 +2,10 @@ name: SimpleTextGenerator
 description: Persona Impersonator
 resources:
   prompts:
-    main_prompt: 'Generate a short story about {person} at {club}:'
+  - second_prompt: Generate a short story about {person} at {club}
+    type: local
+  - main_prompt: '@aroha-labs/klok/1.0.0'
+    type: mira
   knowledge:
     writing_tips:
       file: writing_tips.txt
