@@ -75,12 +75,19 @@ class Model:
 
 class ResourceManager:
     def __init__(self, config):
-        self.prompts = self._load_prompts(config.get('prompts', {}), config.get('prompt_source', 'local'))
+        self.prompts = self._load_prompts(config.get('prompts', {}))
         self.knowledge = self._load_knowledge(config.get('knowledge', {}))
         self.models = self._load_models(config.get('models', {}))
 
-    def _load_prompts(self, prompt_config, prompt_source):
-        return {k: Prompt(v, prompt_source) for k, v in prompt_config.items()}
+    def _load_prompts(self, prompt_config):
+        prompts = {}
+        for prompt in prompt_config:
+            prompt_source = prompt.get("type", "local")
+            for k, v in prompt.items():
+                if k == "type":
+                    continue
+                prompts[k] = Prompt(v, prompt_source)
+        return prompts
 
     def _load_knowledge(self, knowledge_config):
         return {k: Knowledge(v['file']) for k, v in knowledge_config.items()}

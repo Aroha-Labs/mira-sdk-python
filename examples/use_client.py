@@ -5,6 +5,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.mira.client.mira_client import MiraClient
 
-client = MiraClient("my_flow.yaml")
-result = client.execute({"name": "Lionel Messi"})
+client = MiraClient("flows/person.yaml")
+result = client.execute({"coin": "Solana"})
 print(result)
