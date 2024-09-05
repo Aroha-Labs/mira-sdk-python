@@ -1,12 +1,45 @@
 import os
+import requests
 import openai
 
+from src.mira.constants import PROMPT_API_URL
+
+
 class Prompt:
-    def __init__(self, content):
+    def __init__(self, content, content_source):
         self.content = content
+        self.content_source = content_source
 
     def get_content(self):
-        return self.content
+        if self.content_source == "mira":
+            return self._fetch_content_from_api()
+        return self.content, None
+
+    def _fetch_content_from_api(self):
+        # Parse the content to extract organization, prompt name, and version
+        parts = self.content.split('/')
+        if len(parts) < 2:
+            raise ValueError("Invalid content format for mira source")
+
+        org, prompt_name = parts[0].lstrip('@'), parts[1]
+        version = parts[2] if len(parts) > 2 else None
+
+        # Construct the API URL
+        base_url = f"{PROMPT_API_URL}/prompts/{org}/{prompt_name}"
+        if version:
+            base_url += f"?version={version}"
+
+        # Make the API request
+        response = requests.get(base_url, headers={'accept': 'application/json'})
+
+        if response.status_code == 200:
+            data = response.json()
+            return data['content'], data['variables']
+        elif response.status_code == 404:
+            raise Exception(f"Prompt: {self.content}, not found")
+        else:
+            raise Exception(f"API request failed with status code {response.status_code}")
+
 
 class Knowledge:
     def __init__(self, file_path):
@@ -47,7 +80,14 @@ class ResourceManager:
         self.models = self._load_models(config.get('models', {}))
 
     def _load_prompts(self, prompt_config):
-        return {k: Prompt(v) for k, v in prompt_config.items()}
+        prompts = {}
+        for prompt in prompt_config:
+            prompt_source = prompt.get("type", "local")
+            for k, v in prompt.items():
+                if k == "type":
+                    continue
+                prompts[k] = Prompt(v, prompt_source)
+        return prompts
 
     def _load_knowledge(self, knowledge_config):
         return {k: Knowledge(v['file']) for k, v in knowledge_config.items()}
