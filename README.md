@@ -27,12 +27,12 @@ The mira-cli provides several commands for managing flows, prompts, and executin
      pdm run python -m src.mira.cli.mira_cli init --list
      ```
 
-2. Execute a flow:
+2. Execute a flow: - #TODO - lets call this as local testing or local run
    ```
    pdm run python -m src.mira.cli.mira_cli execute --config <path_to_config_file> --input key1=value1 key2=value2
    ```
 
-3. Manage prompts:
+3. Manage prompts: - we have to start with prompts
    - List all prompts:
      ```
      pdm run python -m src.mira.cli.mira_cli prompts --lists
@@ -73,6 +73,7 @@ print(result)
 This script loads a flow from a YAML file and executes it with the given input.
 
 #### Building a Custom Flow
+#TODO - lets skip this piece for now
 
 To create a custom flow using the FlowBuilder:
 
