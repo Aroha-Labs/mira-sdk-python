@@ -19,6 +19,4 @@ license = {text = "MIT"}
 [tool.pdm]
 distribution = false
 
-[tool.pdm.scripts]
-_.env_file = ".env"
-dev="python generate_story.py"
+
