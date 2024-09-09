@@ -1,10 +1,12 @@
 import os
 import click
 
-from src.mira.constants import PROMPT_API_URL
+from ..constants import PROMPT_API_URL
 from ..client.mira_client import MiraClient
 import yaml
 import requests
+import json
+
 
 
 
@@ -113,6 +115,48 @@ def prompts(skip, limit, show, lists, prompt_name):
     except requests.RequestException as e:
         click.echo(f"Error fetching prompts: {str(e)}")
 
+
+@cli.command()
+@click.option("--flow", required=True, help="Path to the YAML config file")
+@click.option("--name", required=True, help="Name of the flow")
+def deploy(flow, name):
+    with open(flow, "r") as file:
+        flow_config = yaml.safe_load(file)
+
+    
+    payload = json.dumps({
+        "flow": flow_config,
+        "name": name
+    })
+    
+    headers = {'Content-Type': 'application/json'}
+    
+    try:
+        response = requests.post("http://localhost:8000/deploy", data=payload, headers=headers)
+        response.raise_for_status()
+        result = response.json()
+        click.echo(f"Result: {result}")
+    except requests.RequestException as e:
+        click.echo(f"Error deploying flow: {str(e)}")
+
+@cli.command()
+@click.option("--flow-name", required=True, help="Name of the flow")
+@click.option("--input-data", required=True, help="Input data in JSON format")
+def execute_flow(flow_name, input_data):
+    payload = json.dumps({
+        "flow_name": flow_name,
+        "input_data": json.loads(input_data)
+    })
+    
+    headers = {'Content-Type': 'application/json', 'accept': 'application/json'}
+    
+    try:
+        response = requests.post("http://127.0.0.1:8000/execute", data=payload, headers=headers)
+        response.raise_for_status()
+        result = response.json()
+        click.echo(f"Result: {result}")
+    except requests.RequestException as e:
+        click.echo(f"Error executing flow: {str(e)}")
 
 
 
