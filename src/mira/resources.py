@@ -2,7 +2,7 @@ import os
 import requests
 import openai
 
-from src.mira.constants import PROMPT_API_URL
+from .constants import PROMPT_API_URL
 
 
 class Prompt:

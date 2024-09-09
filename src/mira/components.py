@@ -1,4 +1,4 @@
-from src.mira.cli.utils import take_user_input
+from .cli.utils import take_user_input
 
 
 class Generator:
@@ -31,10 +31,15 @@ class Generator:
     def execute(self, input_dict):
         prompt_content, prompt_variables = self.prompt.get_content()
         if prompt_variables:
-            for prompt_key, variable_type in prompt_variables.items():
-                if prompt_key not in input_dict:
-                    variable_input = take_user_input.callback(prompt_key, variable_type)
-                    input_dict[prompt_key] = variable_input
+            if input_dict == prompt_variables:
+                print("Prompt variables are not provided. Please provide the variables.")
+            else:
+                print("Prompt variables are provided.")
+        # if prompt_variables:
+        #     for prompt_key, variable_type in prompt_variables.items():
+        #         if prompt_key not in input_dict:
+        #             variable_input = take_user_input.callback(prompt_key, variable_type)
+        #             input_dict[prompt_key] = variable_input
                     # TODO: do variable type validation here
 
         formatted_prompt = prompt_content.format(**input_dict)

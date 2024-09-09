@@ -3,9 +3,12 @@ from .components import Generator
 from .resources import ResourceManager
 
 class Flow:
-    def __init__(self, yaml_path):
-        with open(yaml_path, 'r') as file:
-            self.config = yaml.safe_load(file)
+    def __init__(self, yaml_path, config=None):
+        if config:
+            self.config = config
+        else:
+            with open(yaml_path, 'r') as file:
+                self.config = yaml.safe_load(file)
         print("Loaded configuration:", self.config)
         self.resources = ResourceManager(self.config.get('resources', {}))
         self.components = self._load_components()
