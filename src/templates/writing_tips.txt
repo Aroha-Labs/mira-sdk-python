@@ -1,4 +1,4 @@
-# Writing Tips for LLM Content Generation
+# Writing Tips
 
 1. Start with a clear purpose: Define the main goal of your content before writing.
 
