@@ -14,7 +14,7 @@ builder.set_description("Persona Impersonator")
 # Add resources
 builder.add_prompt([{"second_prompt": "Generate a short story about {person} at {club}", "type": "local"}, {"main_prompt": "@aroha-labs/klok/1.0.0", "type": "mira"}])
 builder.add_resource("knowledge", "writing_tips", {"file": "writing_tips.txt"})
-builder.add_resource("models", "story_generator", {"type": "gpt-3.5-turbo"})
+builder.add_resource("models", "story_generator", {"type": "tric/llama"})
 
 # Add component
 builder.add_component(
@@ -34,4 +34,4 @@ builder.add_flow_step(
 )
 
 # Save the flow
-builder.save("flows/person.yaml")
+builder.save("src/templates/person.yaml")

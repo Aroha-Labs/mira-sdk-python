@@ -5,6 +5,17 @@ import openai
 from .constants import PROMPT_API_URL
 
 
+if not os.getenv('LLM_LITE_API_KEY'):
+    raise ValueError("LLM_LITE_API_KEY environment variable not set")
+if not os.getenv('LLM_LITE_BASE_URL'):
+    raise ValueError("LLM_LITE_BASE_URL environment variable not set")
+
+llm_lite_client = openai.OpenAI(
+    api_key=f"Bearer {os.getenv('LLM_LITE_API_KEY')}",
+    base_url=os.getenv('LLM_LITE_BASE_URL')
+)
+
+
 class Prompt:
     def __init__(self, content, content_source):
         self.content = content
@@ -59,19 +70,24 @@ class Knowledge:
 class Model:
     def __init__(self, config):
         self.type = config['type']
-        self.api_key = os.getenv('OPENAI_API_KEY')
-        if not self.api_key:
-            raise ValueError("OPENAI_API_KEY environment variable not set")
-        openai.api_key = self.api_key
+        # self.api_key = os.getenv('OPENAI_API_KEY')
+        # if not self.api_key:
+        #     raise ValueError("OPENAI_API_KEY environment variable not set")
+        # openai.api_key = self.api_key
 
     def generate(self, prompt):
         print(f"Generating with model: {self.type}")
         print(f"Prompt: {prompt}")
-        response = openai.chat.completions.create(
+        # response = openai.chat.completions.create(
+        #     model=self.type,
+        #     messages=[{"role": "user", "content": prompt}]
+        # )
+        response = llm_lite_client.chat.completions.create(
             model=self.type,
             messages=[{"role": "user", "content": prompt}]
         )
         return response.choices[0].message.content
+
 
 class ResourceManager:
     def __init__(self, config):
