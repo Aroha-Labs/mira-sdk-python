@@ -8,9 +8,8 @@ import requests
 import json
 
 
-
-
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "..", "templates")
+
 
 @click.group()
 def cli():
