@@ -4,8 +4,7 @@ import requests
 class Console:
     def __init__(self, api_key):
         self.api_key = api_key
-        # self.base_url = "https://console-bff.stg.arohalabs.dev"
-        self.base_url = "http://0.0.0.0:8000"
+        self.base_url = "https://console-bff.stg.arohalabs.dev"
 
     def _request(self, method, path, query_params=None, json_data=None, files=None):
         url = f"{self.base_url}/{path}"
@@ -71,15 +70,15 @@ class Console:
         return self._request(method="get", path=path, query_params=params)
 
     def execute_flow(self, author_name, flow_name, input_dict):
-        path = f"v1/flows/{author_name}/{flow_name}"
+        path = f"v1/flows/flows/{author_name}/{flow_name}"
         return self._request(method="post", path=path, json_data=input_dict)
 
     def get_flow(self, author_name, flow_name):
-        path = f"v1/flows/{author_name}/{flow_name}"
+        path = f"v1/flows/flows/{author_name}/{flow_name}"
         return self._request(method="get", path=path)
 
     def get_flows_by_author(self, author_name):
-        path = f"v1/flows/{author_name}"
+        path = f"v1/flows/flows/{author_name}"
         return self._request(method="get", path=path)
 
     def deploy_flow(self, author_name, flow_name, flow_config):
