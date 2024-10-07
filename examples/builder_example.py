@@ -7,6 +7,11 @@ from src.mira.builder.flow_builder import FlowBuilder
 
 builder = FlowBuilder()
 
+builder.add_prompt("What is {coin}?", "local")
+builder.add_knowledge("@sarim/youtube")
+# ("@sanchay/youtube")
+builder.add_model("tric/llama")
+
 # Set flow name and description
 builder.set_name("SimpleTextGenerator")
 builder.set_description("Persona Impersonator")
