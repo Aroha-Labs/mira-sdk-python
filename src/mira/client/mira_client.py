@@ -2,20 +2,27 @@ import os
 from .console import Console
 from ..utils import split_name
 
+class FlowConfig:
+    def __init__(self, data:dict):
+        self.flow = data.get('flow')
+        self.name = data.get('name')
+        self.resources = data.get('resources')
+        self.components = data.get('components')
+        self.description = data.get('description')
 
-# class FlowConfig:
-#     def __init__(self, org, name, config=None):
-#         self.story = story
-#
-#     def __str__(self):
-#         return f"{self.org}/{self.name}"
-
+    def dict(self):
+        return {
+            'flow': self.flow,
+            'name': self.name,
+            'resources': self.resources,
+            'components': self.components,
+            'description': self.description
+        }
 
 class Flow:
-    def __init__(self, org, name, config=None):
-        self.org = org
-        self.name = name
-        self.config = config or {}  # FlowConfig
+    def __init__(self, flow_name:str, config:FlowConfig):
+        self.org, self.name = split_name(flow_name)
+        self.config = config  # FlowConfig
 
     def __str__(self):
         return f"{self.org}/{self.name}"
@@ -45,16 +52,16 @@ class MiraClient:
     def get_flow(self, flow_name: str) -> Flow:
         org, name = split_name(flow_name)
         flow_dict = self.console.get_flow(org, name)
-        return Flow(org, name, flow_dict.get('config'))
+        return Flow(flow_name, flow_dict.get('config'))
 
     def get_flows_by_author(self, author_name: str) -> list[Flow]:
         if len(author_name) > 1 and author_name[0] == "@":
             author_name = author_name[1:]
         flows_list = self.console.get_flows_by_author(author_name)
-        return [Flow(flow['org'], flow['name'], flow.get('config')) for flow in flows_list]
+        return [Flow(f"{flow['org']}/{flow['name']}", FlowConfig(flow.get('config', {}))) for flow in flows_list]
 
     def deploy_flow(self, flow: Flow):
-        return self.console.deploy_flow(flow.org, flow.name, flow.config)
+        return self.console.deploy_flow(flow.org, flow.name, flow.config.dict())
 
     def get_prompt(self, prompt_name: str) -> Prompt:
         version = None

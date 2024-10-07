@@ -1,14 +1,23 @@
 import sys
 import os
+import yaml
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.mira.client.mira_client import MiraClient
+from src.mira.client.mira_client import MiraClient, FlowConfig, Flow
 
 # from mira_sdk import MiraClient
 
 client = MiraClient({"API_KEY": "sb-sanji_test_key"})
-created_prompt = client.create_prompt(prompt_name="@friday/city", content="What is the best cuisine of {city}?", version="0.0.1", variables={"city": "string"})
+
+with open('src/mira/templates/person.yaml', 'r') as file:
+    data = yaml.safe_load(file)
+
+print(data)
+
+flow1 = Flow("@test/flow", FlowConfig(data))
+print(flow1)
+# created_prompt = client.create_prompt(prompt_name="@friday/city", content="What is the best cuisine of {city}?", version="0.0.1", variables={"city": "string"})
 
 # new_prompt = client.get_prompt("@friday/city")
 # print(new_prompt)
@@ -27,26 +36,26 @@ created_prompt = client.create_prompt(prompt_name="@friday/city", content="What 
 # required_vars = flow1["input"]["required"]
 
 # Take input from user
-input_vars_dict = {
-    "city": "Amsterdam",
-}
-#
-result = client.execute_flow("@sarim/itenary", input_vars_dict)
-print(result)
+# input_vars_dict = {
+#     "city": "Amsterdam",
+# }
 # #
-# knowledge = client.add_knowledge("@sarim/test", "/Users/sanchay/Downloads/urls.csv")
-# knowledge1 = client.add_knowledge("@sarim/test", "/Users/sanchay/Downloads/scores.md")
-# print(knowledge)
-# knowledge_context = client.get_knowledge_context_for_prompt("@sarim/test", "Who is the founder of Mira?")
-# print(knowledge_context)
-"""
-{
-    "context": ""
-}
-"""
+# result = client.execute_flow("@sarim/itenary", input_vars_dict)
+# print(result)
+# # #
+# # knowledge = client.add_knowledge("@sarim/test", "/Users/sanchay/Downloads/urls.csv")
+# # knowledge1 = client.add_knowledge("@sarim/test", "/Users/sanchay/Downloads/scores.md")
+# # print(knowledge)
+# # knowledge_context = client.get_knowledge_context_for_prompt("@sarim/test", "Who is the founder of Mira?")
+# # print(knowledge_context)
+# """
+# {
+#     "context": ""
+# }
+# """
 
 
-# deployed_flow = client.deploy_flow("@test/flow", "abcd.yaml")
+deployed_flow = client.deploy_flow(flow1)
 
 
 
