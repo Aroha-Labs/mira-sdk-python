@@ -7,7 +7,7 @@ from src.mira.client.mira_client import MiraClient
 
 # from mira_sdk import MiraClient
 
-client = MiraClient({"API_KEY": "sb-sanji_test_key"})
+client = MiraClient({"API_KEY": "<API_KEY>"})
 created_prompt = client.create_prompt(prompt_name="@friday/city", content="What is the best cuisine of {city}?", version="0.0.1", variables={"city": "string"})
 
 # new_prompt = client.get_prompt("@friday/city")
