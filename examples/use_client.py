@@ -10,13 +10,13 @@ from src.mira.client.mira_client import MiraClient, FlowConfig, Flow
 
 client = MiraClient({"API_KEY": "sb-sanji_test_key"})
 
-with open('src/mira/templates/person.yaml', 'r') as file:
-    data = yaml.safe_load(file)
-
-print(data)
-
-flow1 = Flow("@test/flow", FlowConfig(data))
-print(flow1)
+# with open('src/mira/templates/person.yaml', 'r') as file:
+#     data = yaml.safe_load(file)
+#
+# print(data)
+#
+# flow1 = Flow("@test/flow", FlowConfig(data))
+# print(flow1)
 # created_prompt = client.create_prompt(prompt_name="@friday/city", content="What is the best cuisine of {city}?", version="0.0.1", variables={"city": "string"})
 
 # new_prompt = client.get_prompt("@friday/city")

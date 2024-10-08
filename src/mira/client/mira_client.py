@@ -2,6 +2,7 @@ import os
 from .console import Console
 from ..utils import split_name
 
+
 class FlowConfig:
     def __init__(self, data:dict):
         self.flow = data.get('flow')
@@ -19,10 +20,11 @@ class FlowConfig:
             'description': self.description
         }
 
+
 class Flow:
-    def __init__(self, flow_name:str, config:FlowConfig):
+    def __init__(self, flow_name: str, config: FlowConfig):
         self.org, self.name = split_name(flow_name)
-        self.config = config  # FlowConfig
+        self.config: FlowConfig = config  # FlowConfig
 
     def __str__(self):
         return f"{self.org}/{self.name}"
@@ -47,7 +49,7 @@ class MiraClient:
         self.console = Console(self.config.get("API_KEY"))
 
     def execute_flow(self, flow: Flow, input_dict: dict):
-        return self.console.execute_flow(flow.org, flow.name, input_dict)
+        return self.console.execute_flow(flow.org, flow.name, flow.config, input_dict)
 
     def get_flow(self, flow_name: str) -> Flow:
         org, name = split_name(flow_name)
@@ -61,6 +63,8 @@ class MiraClient:
         return [Flow(f"{flow['org']}/{flow['name']}", FlowConfig(flow.get('config', {}))) for flow in flows_list]
 
     def deploy_flow(self, flow: Flow):
+        if len(flow.org) > 1 and flow.org[0] == "@":
+            flow.org = flow.org[1:]
         return self.console.deploy_flow(flow.org, flow.name, flow.config.dict())
 
     def get_prompt(self, prompt_name: str) -> Prompt:

@@ -68,9 +68,13 @@ class Console:
             params["version"] = version
         return self._request(method="get", path=path, query_params=params).get("data")
 
-    def execute_flow(self, author_name, flow_name, input_dict):
+    def execute_flow(self, author_name, flow_name, flow_config, input_dict):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
-        return self._request(method="post", path=path, json_data=input_dict)
+        json_data = {
+            "flow": flow_config,
+            "input": input_dict
+        }
+        return self._request(method="post", path=path, json_data=json_data)
 
     def get_flow(self, author_name, flow_name):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
