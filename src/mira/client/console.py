@@ -4,8 +4,8 @@ import requests
 class Console:
     def __init__(self, api_key):
         self.api_key = api_key
-        self.base_url = "https://console-bff.stg.arohalabs.dev"
-        # self.base_url = "http://0.0.0.0:9000"
+        # self.base_url = "https://console-bff.stg.arohalabs.dev"
+        self.base_url = "http://0.0.0.0:9000"
 
     def _request(self, method, path, query_params=None, json_data=None, files=None, data=None):
         url = f"{self.base_url}/{path}"
@@ -68,27 +68,43 @@ class Console:
             params["version"] = version
         return self._request(method="get", path=path, query_params=params).get("data")
 
-    def execute_flow(self, author_name, flow_name, flow_config, input_dict):
+    def execute_flow(self, author_name, flow_name, input_dict, version):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
+        params = {
+            "version": version
+        }
+        return self._request(method="post", path=path, json_data=input_dict, query_params=params)
+
+    def run_flow(self, flow_config, input_dict):
+        path = f"v1/flows/flows/run"
         json_data = {
-            "flow": flow_config,
+            "flow_config": flow_config,
             "input": input_dict
         }
         return self._request(method="post", path=path, json_data=json_data)
 
-    def get_flow(self, author_name, flow_name):
+    def get_flow(self, author_name, flow_name, version):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
-        return self._request(method="get", path=path).get("data")
+        params = {
+            "version": version
+        }
+        return self._request(method="get", path=path, query_params=params).get("data")
 
     def get_flows_by_author(self, author_name):
         path = f"v1/flows/flows/{author_name}"
         return self._request(method="get", path=path).get("data")
 
-    def deploy_flow(self, author_name, flow_name, flow_config):
+    def deploy_flow(self, author_name, flow_name, flow_config, is_private, version):
         path = f"v1/flows/deploy/{author_name}/{flow_name}"
         json_data = {
-            "flow": flow_config
+            "flow": flow_config,
+            "private": is_private
         }
+        if version:
+            params = {
+                "version": version
+            }
+            return self._request(method="post", path=path, json_data=json_data, query_params=params)
         return self._request(method="post", path=path, json_data=json_data)
 
     def get_prompts_by_author(self, author_name):

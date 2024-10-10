@@ -8,19 +8,28 @@ from src.mira.client.mira_client import MiraClient, FlowConfig, Flow
 
 # from mira_sdk import MiraClient
 
-client = MiraClient({"API_KEY": "sb-sanji_test_key"})
+client = MiraClient({"API_KEY": "<YOUR_API_KEY>"})
 
-# with open('src/mira/templates/person.yaml', 'r') as file:
-#     data = yaml.safe_load(file)
-#
+with open('src/mira/templates/person.yaml', 'r') as file:
+    data = yaml.safe_load(file)
+
 # print(data)
 #
-# flow1 = Flow("@test/flow", FlowConfig(data))
-# print(flow1)
+# flow1 = Flow(flow_name="@test/flower", config=FlowConfig(data), private=True, version="1.2.0")
+# flow1.to_yaml("abcd.yaml")
+# print(flow1.config.dict())
+# print(flow1.name)
+# print(flow1.org)
+# flow2 = client.get_flow("@test/flower")
+# print(flow2.version)
+# print(flow2.config)
+
+# test_flows = client.get_flows_by_author("@test")
+# print(test_flows)
 # created_prompt = client.create_prompt(prompt_name="@friday/city", content="What is the best cuisine of {city}?", version="0.0.1", variables={"city": "string"})
 
-# new_prompt = client.get_prompt("@friday/city")
-# print(new_prompt)
+new_prompt = client.get_prompt("@friday/city")
+print(new_prompt)
 # updated_prompt = client.update_prompt("@friday/city", "0.0.3", "What is famous about {city}? List it's prominent restaurants and their ratings", {"city": "string"})
 # print(updated_prompt)
 # prompts_by_author = client.get_prompts_by_author("@test")
@@ -36,11 +45,12 @@ client = MiraClient({"API_KEY": "sb-sanji_test_key"})
 # required_vars = flow1["input"]["required"]
 
 # Take input from user
-# input_vars_dict = {
-#     "city": "Amsterdam",
-# }
+input_vars_dict = {
+    "coin": "Solana",
+    "date": "1945"
+}
 # #
-# result = client.execute_flow("@sarim/itenary", input_vars_dict)
+# result = client.run_flow(FlowConfig(data), input_vars_dict)
 # print(result)
 # # #
 # # knowledge = client.add_knowledge("@sarim/test", "/Users/sanchay/Downloads/urls.csv")
@@ -55,8 +65,9 @@ client = MiraClient({"API_KEY": "sb-sanji_test_key"})
 # """
 
 
-deployed_flow = client.deploy_flow(flow1)
-
+# deployed_flow = client.deploy_flow(flow1)
+# result = client.execute_flow(flow1, input_vars_dict)
+# print(result)
 
 
 

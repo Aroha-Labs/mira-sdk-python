@@ -1,10 +1,13 @@
 import os
+from typing import Optional
+import semantic_version
+
 from .console import Console
 from ..utils import split_name
 
 
 class FlowConfig:
-    def __init__(self, data:dict):
+    def __init__(self, data: dict):
         self.flow = data.get('flow')
         self.name = data.get('name')
         self.resources = data.get('resources')
@@ -22,25 +25,38 @@ class FlowConfig:
 
 
 class Flow:
-    def __init__(self, flow_name: str, config: FlowConfig):
+    def __init__(self, flow_name: str, config: FlowConfig, private: bool, version: Optional[str] = None):
+        if version:
+            # Throws Value error if version string is not a valid sematic version
+            semantic_version.Version(version)
+
         self.org, self.name = split_name(flow_name)
-        self.config: FlowConfig = config  # FlowConfig
+        self.config: FlowConfig = config
+        self.version = version
+        self.private = private
 
     def __str__(self):
+        if self.version:
+            return f"{self.org}/{self.name}/{self.version}"
         return f"{self.org}/{self.name}"
 
 
 class Prompt:
-    def __init__(self, org, name, version, content, variables=None):
-        self.org = org
-        self.name = name
+    def __init__(self, prompt_name: str, content: str, version: Optional[str] = None, variables: Optional[dict] = None):
+        if version:
+            # Throws Value error if version string is not a valid sematic version
+            semantic_version.Version(version)
+
+        self.org, self.name = split_name(prompt_name)
         self.version = version
         self.content = content
         self.variables = variables or {}
         self.prompt_id = None  # This will be set when retrieved from or created in the console
 
     def __str__(self):
-        return f"{self.org}/{self.name}/{self.version}"
+        if self.version:
+            return f"{self.org}/{self.name}/{self.version}"
+        return f"{self.org}/{self.name}"
 
 
 class MiraClient:
@@ -49,31 +65,40 @@ class MiraClient:
         self.console = Console(self.config.get("API_KEY"))
 
     def execute_flow(self, flow: Flow, input_dict: dict):
-        return self.console.execute_flow(flow.org, flow.name, flow.config, input_dict)
+        return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version)
+
+    def run_flow(self, flow_config: FlowConfig, input_dict: dict):
+        return self.console.run_flow(flow_config.dict(), input_dict)
 
     def get_flow(self, flow_name: str) -> Flow:
+        version = None
+        if len(flow_name.split("/")) > 2:
+            version = flow_name.split("/")[-1]
         org, name = split_name(flow_name)
-        flow_dict = self.console.get_flow(org, name)
-        return Flow(flow_name, flow_dict.get('config'))
+        flow_dict = self.console.get_flow(org, name, version)
+        print(flow_dict)
+        return Flow(flow_name, flow_dict.get('config'), flow_dict.get('private'), flow_dict.get('version'))
 
     def get_flows_by_author(self, author_name: str) -> list[Flow]:
         if len(author_name) > 1 and author_name[0] == "@":
             author_name = author_name[1:]
         flows_list = self.console.get_flows_by_author(author_name)
-        return [Flow(f"{flow['org']}/{flow['name']}", FlowConfig(flow.get('config', {}))) for flow in flows_list]
+        return flows_list
+        # return [Flow(f"{flow['org']}/{flow[' name']}", FlowConfig(flow.get('config', {}))) for flow in flows_list]
 
     def deploy_flow(self, flow: Flow):
         if len(flow.org) > 1 and flow.org[0] == "@":
             flow.org = flow.org[1:]
-        return self.console.deploy_flow(flow.org, flow.name, flow.config.dict())
+        return self.console.deploy_flow(flow.org, flow.name, flow.config.dict(), flow.private, flow.version)
 
+    # Prompts
     def get_prompt(self, prompt_name: str) -> Prompt:
         version = None
         if len(prompt_name.split("/")) > 2:
             version = prompt_name.split("/")[-1]
         org, name = split_name(prompt_name)
         prompt_dict = self.console.get_prompt_version(org, name, version)
-        prompt = Prompt(org, name, prompt_dict['version'], prompt_dict['content'], prompt_dict.get('variables'))
+        prompt = Prompt(f"{prompt_dict['author_name']}/{prompt_dict['prompt_name']}", prompt_dict["content"], prompt_dict["version"], prompt_dict["variables"])
         prompt.prompt_id = prompt_dict['prompt_id']
         return prompt
 
@@ -96,7 +121,7 @@ class MiraClient:
 
     def get_all_versions_by_prompt(self, prompt: Prompt) -> list[Prompt]:
         versions = self.console.get_all_versions_by_prompt(prompt.prompt_id)
-        return [Prompt(prompt.org, prompt.name, v['version'], v['content'], v.get('variables')) for v in versions]
+        return [Prompt(prompt.org, prompt.name, v['content'], v['version'], v.get('variables')) for v in versions]
 
     def add_knowledge(self, knowledge_name: str, absolute_file_path: str):
         org, knowledge_name = split_name(knowledge_name)
