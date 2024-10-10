@@ -76,7 +76,6 @@ class MiraClient:
             version = flow_name.split("/")[-1]
         org, name = split_name(flow_name)
         flow_dict = self.console.get_flow(org, name, version)
-        print(flow_dict)
         return Flow(flow_name, flow_dict.get('config'), flow_dict.get('private'), flow_dict.get('version'))
 
     def get_flows_by_author(self, author_name: str) -> list[Flow]:
