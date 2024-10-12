@@ -7,8 +7,7 @@ resources:
   - main_prompt: '@aroha-labs/klok/1.0.0'
     type: mira
   knowledge:
-    writing_tips:
-      file: src/templates/writing_tips.txt
+    - writing_tips: '@test-author/test-knowledge'
   models:
     story_generator:
       type: tric/llama

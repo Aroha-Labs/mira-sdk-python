@@ -8,9 +8,8 @@ import requests
 import json
 
 
-
-
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "..", "templates")
+
 
 @click.group()
 def cli():
@@ -123,7 +122,6 @@ def deploy(flow, name):
     with open(flow, "r") as file:
         flow_config = yaml.safe_load(file)
 
-    
     payload = json.dumps({
         "flow": flow_config,
         "name": name
@@ -157,7 +155,6 @@ def execute_flow(flow_name, input_data):
         click.echo(f"Result: {result}")
     except requests.RequestException as e:
         click.echo(f"Error executing flow: {str(e)}")
-
 
 
 if __name__ == "__main__":
