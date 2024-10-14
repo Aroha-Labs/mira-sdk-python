@@ -116,7 +116,6 @@ class MiraClient:
         if len(author_name) > 1 and author_name[0] == "@":
             author_name = author_name[1:]
         prompts_list = self.console.get_prompts_by_author(author_name)
-        print(prompts_list)
         # return [Prompt(p['author_name'], p['prompt_name'], None , p['content'], p.get('variables')) for p in prompts_list]
         return prompts_list
 
