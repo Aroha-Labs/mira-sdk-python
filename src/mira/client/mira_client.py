@@ -116,11 +116,15 @@ class MiraClient:
         if len(author_name) > 1 and author_name[0] == "@":
             author_name = author_name[1:]
         prompts_list = self.console.get_prompts_by_author(author_name)
-        return [Prompt(p['org'], p['name'], p['version'], p['content'], p.get('variables')) for p in prompts_list]
+        print(prompts_list)
+        # return [Prompt(p['author_name'], p['prompt_name'], None , p['content'], p.get('variables')) for p in prompts_list]
+        return prompts_list
 
     def get_all_versions_by_prompt(self, prompt: Prompt) -> list[Prompt]:
         versions = self.console.get_all_versions_by_prompt(prompt.prompt_id)
-        return [Prompt(prompt.org, prompt.name, v['content'], v['version'], v.get('variables')) for v in versions]
+        print(versions)
+        return [Prompt(f"{prompt.org}/{prompt.name}", v['content'], v['version'], v.get('variables')) for v in versions]
+        # return versions
 
     def add_knowledge(self, knowledge_name: str, absolute_file_path: str):
         org, knowledge_name = split_name(knowledge_name)
