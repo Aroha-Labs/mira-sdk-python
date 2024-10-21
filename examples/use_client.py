@@ -1,17 +1,21 @@
 import sys
 import os
 import yaml
+import asyncio
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.mira.client.mira_client import MiraClient, FlowConfig, Flow
+from src.mira.client.mira_client import MiraClient, FlowConfig, Flow, async_MiraClient, Prompt
 
 # from mira_sdk import MiraClient
 
-client = MiraClient({"API_KEY": "<YOUR_API_KEY>"})
+# client = MiraClient({"API_KEY": "<YOUR_API_KEY>"})
+client = async_MiraClient({"API_KEY": "sb-f2aefa9b3c653a63960a9602b794ce0b"})
 
 with open('src/mira/templates/person.yaml', 'r') as file:
     data = yaml.safe_load(file)
+
+
 
 # print(data)
 #
@@ -20,7 +24,14 @@ with open('src/mira/templates/person.yaml', 'r') as file:
 # print(flow1.config.dict())
 # print(flow1.name)
 # print(flow1.org)
-# flow2 = client.get_flow("@test/flower")
+
+# flow2 = client.get_flow("@aroha-labs/coin-flow")
+# print(flow2)
+async def main():
+    flow2 = await client.execute_flow(Flow(flow_name="@yash/city", config=FlowConfig(data), private=True, version="0.2.1"), {"city": "Delhi"})
+    print(flow2)
+
+asyncio.run(main())
 # print(flow2.version)
 # print(flow2.config)
 
@@ -28,8 +39,8 @@ with open('src/mira/templates/person.yaml', 'r') as file:
 # print(test_flows)
 # created_prompt = client.create_prompt(prompt_name="@friday/city", content="What is the best cuisine of {city}?", version="0.0.1", variables={"city": "string"})
 
-new_prompt = client.get_prompt("@friday/city")
-print(new_prompt)
+# new_prompt = client.get_prompt("@friday/city")
+# print(new_prompt)
 # updated_prompt = client.update_prompt("@friday/city", "0.0.3", "What is famous about {city}? List it's prominent restaurants and their ratings", {"city": "string"})
 # print(updated_prompt)
 # prompts_by_author = client.get_prompts_by_author("@test")
@@ -45,10 +56,10 @@ print(new_prompt)
 # required_vars = flow1["input"]["required"]
 
 # Take input from user
-input_vars_dict = {
-    "coin": "Solana",
-    "date": "1945"
-}
+# input_vars_dict = {
+#     "coin": "Solana",
+#     "date": "1945"
+# }
 # #
 # result = client.run_flow(FlowConfig(data), input_vars_dict)
 # print(result)
