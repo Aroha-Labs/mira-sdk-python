@@ -6,6 +6,7 @@ class Console:
         self.api_key = api_key
         # self.base_url = "https://console-bff.stg.arohalabs.dev"
         self.base_url = "http://0.0.0.0:9000"
+        # self.base_url = "http://0.0.0.0:8002"
 
     def _request(self, method, path, query_params=None, json_data=None, files=None, data=None):
         url = f"{self.base_url}/{path}"
@@ -68,10 +69,11 @@ class Console:
             params["version"] = version
         return self._request(method="get", path=path, query_params=params).get("data")
 
-    def execute_flow(self, author_name, flow_name, input_dict, version):
+    def execute_flow(self, author_name, flow_name, input_dict, version, flow_type):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
         params = {
-            "version": version
+            "version": version,
+            "type": flow_type
         }
         return self._request(method="post", path=path, json_data=input_dict, query_params=params)
 
@@ -89,16 +91,19 @@ class Console:
             "version": version
         }
         return self._request(method="get", path=path, query_params=params).get("data")
+    #TODO: Improve data return through request
 
     def get_flows_by_author(self, author_name):
         path = f"v1/flows/flows/{author_name}"
         return self._request(method="get", path=path).get("data")
+    #TODO: Improve data return through request
 
-    def deploy_flow(self, author_name, flow_name, flow_config, is_private, version):
+    def deploy_flow(self, author_name, flow_name, flow_config, is_private, version, flow_type):
         path = f"v1/flows/deploy/{author_name}/{flow_name}"
         json_data = {
             "flow": flow_config,
-            "private": is_private
+            "private": is_private,
+            "type": flow_type
         }
         if version:
             params = {

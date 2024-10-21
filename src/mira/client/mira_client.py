@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 import semantic_version
-
+from enum import Enum
 from .console import Console
 from ..utils import split_name
 
@@ -24,16 +24,23 @@ class FlowConfig:
         }
 
 
+class FlowType(Enum):
+    PRIMITIVE = "PRIMITIVE"
+    COMPLEX = "COMPLEX"
+
+
 class Flow:
-    def __init__(self, flow_name: str, config: FlowConfig, private: bool, version: Optional[str] = None):
+    def __init__(self, flow_name: str, config: FlowConfig, private: bool, version: Optional[str] = None, flow_type: FlowType = FlowType.PRIMITIVE):
         if version:
             # Throws Value error if version string is not a valid sematic version
             semantic_version.Version(version)
+
 
         self.org, self.name = split_name(flow_name)
         self.config: FlowConfig = config
         self.version = version
         self.private = private
+        self.type = flow_type
 
     def __str__(self):
         if self.version:
@@ -65,7 +72,9 @@ class MiraClient:
         self.console = Console(self.config.get("API_KEY"))
 
     def execute_flow(self, flow: Flow, input_dict: dict):
-        return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version)
+        # if flow.type == FlowType.COMPLEX:
+        #     raise ValueError("Only primitive flows can be directly executed. Complex flows must be run through a different method.")
+        return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version, flow.type.value)
 
     def run_flow(self, flow_config: FlowConfig, input_dict: dict):
         return self.console.run_flow(flow_config.dict(), input_dict)
@@ -88,7 +97,7 @@ class MiraClient:
     def deploy_flow(self, flow: Flow):
         if len(flow.org) > 1 and flow.org[0] == "@":
             flow.org = flow.org[1:]
-        return self.console.deploy_flow(flow.org, flow.name, flow.config.dict(), flow.private, flow.version)
+        return self.console.deploy_flow(flow.org, flow.name, flow.config.dict(), flow.private, flow.version, flow.type.value)
 
     # Prompts
     def get_prompt(self, prompt_name: str) -> Prompt:
