@@ -104,13 +104,13 @@ class MiraClient:
 
     def create_prompt(self, prompt: Prompt) -> Prompt:
         result = self.console.create_prompt(prompt.org, prompt.name, prompt.version, prompt.content, prompt.variables)
-        prompt.prompt_id = result["data"]['prompt_id']
+        prompt.prompt_id = result['data']['prompt_id']
         return prompt
 
     def update_prompt(self, prompt: Prompt) -> Prompt:
         current_prompt = self.console.get_prompt_version(prompt.org, prompt.name, None)
         result = self.console.add_prompt_version(current_prompt['prompt_id'], prompt.version, prompt.content, prompt.variables)
-        prompt.prompt_id = result["data"]['prompt_id']
+        prompt.prompt_id = result['data']['prompt_id']
         return prompt
 
     def get_prompts_by_author(self, author_name: str) -> list[Prompt]:
@@ -196,13 +196,13 @@ class async_MiraClient:
 
     async def create_prompt(self, prompt: Prompt) -> Prompt:
         result = await self.console.create_prompt(prompt.org, prompt.name, prompt.version, prompt.content, prompt.variables)
-        prompt.prompt_id = result["data"]['prompt_id']
+        prompt.prompt_id = result['data']['prompt_id']
         return prompt
 
     async def update_prompt(self, prompt: Prompt) -> Prompt:
         current_prompt = await self.console.get_prompt_version(prompt.org, prompt.name, None)
         result = await self.console.add_prompt_version(current_prompt['prompt_id'], prompt.version, prompt.content, prompt.variables)
-        prompt.prompt_id = result["data"]['prompt_id']
+        prompt.prompt_id = result['data']['prompt_id']
         return prompt
 
     async def get_prompts_by_author(self, author_name: str) -> list[Prompt]:

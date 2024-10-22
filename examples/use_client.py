@@ -9,8 +9,8 @@ from src.mira.client.mira_client import MiraClient, FlowConfig, Flow, async_Mira
 
 # from mira_sdk import MiraClient
 
-# client = MiraClient({"API_KEY": "<YOUR_API_KEY>"})
-client = async_MiraClient({"API_KEY": "sb-f2aefa9b3c653a63960a9602b794ce0b"})
+client = MiraClient({"API_KEY": "<YOUR_API_KEY>"})
+async_client = async_MiraClient({"API_KEY": "<YOUR_API_KEY>"})
 
 with open('src/mira/templates/person.yaml', 'r') as file:
     data = yaml.safe_load(file)
@@ -26,12 +26,18 @@ with open('src/mira/templates/person.yaml', 'r') as file:
 # print(flow1.org)
 
 # flow2 = client.get_flow("@aroha-labs/coin-flow")
+flow2 = client.update_prompt(Prompt(prompt_name="@yash/city", content="What is the best cuisine of {city}?", version="1.4.3", variables={"city": "string"}))
 # print(flow2)
-async def main():
-    flow2 = await client.execute_flow(Flow(flow_name="@yash/city", config=FlowConfig(data), private=True, version="0.2.1"), {"city": "Delhi"})
-    print(flow2)
+# async def main():
+#     flow2 = await client.update_prompt(Prompt(prompt_name="@yash/city", content="What is the best cuisine of {city}?", version="1.1.3", variables={"city": "string"}))
+#     print(flow2)
 
-asyncio.run(main())
+# asyncio.run(main())
+# async def main():
+#     flow2 = await client.update_prompt(Prompt(prompt_name="@yash/city", content="What is the best cuisine of {city}?", version="1.1.3", variables={"city": "string"}))
+#     print(flow2)
+
+# asyncio.run(main())
 # print(flow2.version)
 # print(flow2.config)
 
