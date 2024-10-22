@@ -88,7 +88,7 @@ def test_create_prompt(mira_client):
     prompt = Prompt("org/prompt", "Test content", "1.0.0", {"var": "value"})
 
     with patch.object(mira_client.console, 'create_prompt') as mock_create:
-        mock_create.return_value = {"prompt_id": "123"}
+        mock_create.return_value = {"data": {"prompt_id": "123"}}
         result = mira_client.create_prompt(prompt)
 
     mock_create.assert_called_once_with("org", "prompt", "1.0.0", "Test content", {"var": "value"})
@@ -100,7 +100,7 @@ def test_update_prompt(mira_client):
     with patch.object(mira_client.console, 'get_prompt_version') as mock_get:
         mock_get.return_value = {"prompt_id": "123"}
         with patch.object(mira_client.console, 'add_prompt_version') as mock_update:
-            mock_update.return_value = {"prompt_id": "123"}
+            mock_update.return_value = {"data": {"prompt_id": "123"}}   
             result = mira_client.update_prompt(prompt)
 
     mock_get.assert_called_once_with("org", "prompt", None)

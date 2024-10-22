@@ -4,6 +4,7 @@ import requests
 class Console:
     def __init__(self, api_key):
         self.api_key = api_key
+
         # self.base_url = "https://console-bff.stg.arohalabs.dev"
         self.base_url = "http://0.0.0.0:9000"
         # self.base_url = "http://0.0.0.0:8002"
@@ -71,10 +72,14 @@ class Console:
 
     def execute_flow(self, author_name, flow_name, input_dict, version, flow_type):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
-        params = {
-            "version": version,
-            "type": flow_type
-        }
+
+        params = {}
+        if version:
+            params = {
+                "version": version,
+                "type": flow_type
+            }
+
         return self._request(method="post", path=path, json_data=input_dict, query_params=params)
 
     def run_flow(self, flow_config, input_dict):
@@ -87,11 +92,15 @@ class Console:
 
     def get_flow(self, author_name, flow_name, version):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
-        params = {
-            "version": version
+        params = {}
+        if version:
+            params = {
+                "version": version
         }
+
         return self._request(method="get", path=path, query_params=params).get("data")
     #TODO: Improve data return through request
+
 
     def get_flows_by_author(self, author_name):
         path = f"v1/flows/flows/{author_name}"
