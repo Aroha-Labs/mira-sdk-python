@@ -5,8 +5,8 @@ class Console:
     def __init__(self, api_key):
         self.api_key = api_key
 
-        # self.base_url = "https://console-bff.stg.arohalabs.dev"
-        self.base_url = "http://0.0.0.0:9000"
+        self.base_url = "https://console-bff.stg.arohalabs.dev"
+        # self.base_url = "http://0.0.0.0:9000"
         # self.base_url = "http://0.0.0.0:8002"
 
     def _request(self, method, path, query_params=None, json_data=None, files=None, data=None):
