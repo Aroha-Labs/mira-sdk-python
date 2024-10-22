@@ -1,10 +1,10 @@
 import pytest
 from unittest.mock import AsyncMock, patch
-from src.mira.client.mira_client import async_MiraClient, Flow, FlowConfig, Prompt
+from src.mira.client.async_mira_client import AsyncMiraClient, Flow, FlowConfig, Prompt
 
 @pytest.fixture
 def mira_client():
-    return async_MiraClient(config={"API_KEY": "test_api_key"})
+    return AsyncMiraClient(config={"API_KEY": "test_api_key"})
 
 @pytest.mark.asyncio
 async def test_execute_flow(mira_client):

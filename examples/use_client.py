@@ -5,12 +5,13 @@ import asyncio
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.mira.client.mira_client import MiraClient, FlowConfig, Flow, async_MiraClient, Prompt
+from src.mira.client.mira_client import MiraClient, FlowConfig, Flow, Prompt
+from src.mira.client.async_mira_client import AsyncMiraClient
 
 # from mira_sdk import MiraClient
 
 client = MiraClient({"API_KEY": "<YOUR_API_KEY>"})
-async_client = async_MiraClient({"API_KEY": "<YOUR_API_KEY>"})
+async_client = AsyncMiraClient({"API_KEY": "<YOUR_API_KEY>"})
 
 with open('src/mira/templates/person.yaml', 'r') as file:
     data = yaml.safe_load(file)
