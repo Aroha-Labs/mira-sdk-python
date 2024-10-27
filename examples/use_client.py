@@ -11,12 +11,39 @@ from src.mira.client.async_mira_client import AsyncMiraClient
 # from mira_sdk import MiraClient
 
 client = MiraClient({"API_KEY": "<YOUR_API_KEY>"})
-async_client = AsyncMiraClient({"API_KEY": "<YOUR_API_KEY>"})
+async_client = AsyncMiraClient({"API_KEY":"<YOUR_API_KEY>"})
 
 with open('src/mira/templates/person.yaml', 'r') as file:
     data = yaml.safe_load(file)
 
 
+
+async def main():
+    # This is correct:
+    prompt = await async_client.prompt.get("@yash/city")
+    print(prompt)
+
+# Run the async function
+asyncio.run(main())
+
+# # Prompts
+prompt = client.prompt.get("@yash/city")
+print(prompt)
+# created_prompt = client.prompt.create(Prompt(prompt_name="@friday/city", content="What is the best cuisine of {city}?", version="0.0.1", variables={"city": "string"}))
+# updated_prompt = client.prompt.update(Prompt(prompt_name="@yash/city", content="What is the best cuisine of {city}?", version="1.4.3", variables={"city": "string"}))
+# prompts_by_author = client.prompt.get_by_author("@test")
+# all_prompt_versions = client.prompt.get_all_versions(prompt)
+
+# # Flows
+# flow = client.flow.get("@aroha-labs/coin-flow")
+# result = client.flow.execute(flow, input_dict)
+# run_result = client.flow.run(FlowConfig(data), input_dict)
+# flows_by_author = client.flow.get_by_author("@test")
+# deployed_flow = client.flow.deploy(flow)
+
+# # Knowledge
+# knowledge = client.knowledge.add("@sarim/test", "/path/to/file.csv")
+# knowledge_context = client.knowledge.get_context_for_prompt("@sarim/test", "Who is the founder of Mira?")
 
 # print(data)
 #
@@ -27,7 +54,7 @@ with open('src/mira/templates/person.yaml', 'r') as file:
 # print(flow1.org)
 
 # flow2 = client.get_flow("@aroha-labs/coin-flow")
-flow2 = client.update_prompt(Prompt(prompt_name="@yash/city", content="What is the best cuisine of {city}?", version="1.4.3", variables={"city": "string"}))
+# flow2 = async_client.update_prompt(Prompt(prompt_name="@yash/city", content="What is the best cuisine of {city}?", version="1.4.3", variables={"city": "string"}))
 # print(flow2)
 # async def main():
 #     flow2 = await client.update_prompt(Prompt(prompt_name="@yash/city", content="What is the best cuisine of {city}?", version="1.1.3", variables={"city": "string"}))
@@ -167,3 +194,5 @@ Knowledge ->
 Not implemented yet:
 - remove_knowledge(knowledge_name: str, "abcd.md")
 """
+
+
