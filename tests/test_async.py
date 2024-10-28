@@ -8,12 +8,12 @@ def mira_client():
 
 @pytest.mark.asyncio
 async def test_execute_flow(mira_client):
-    flow = Flow("org/flow", FlowConfig({}), private=False, version="1.0.0")
+    flow = Flow("org/flow", FlowConfig({"name": "test_flow"}), private=False, version="1.0.0")
     input_dict = {"key": "value"}
 
     with patch.object(mira_client.console, 'execute_flow', new_callable=AsyncMock) as mock_execute:
         mock_execute.return_value = {"result": "success"}
-        result = await mira_client.execute_flow(flow, input_dict)
+        result = await mira_client.flow.execute(flow, input_dict)
 
     mock_execute.assert_called_once_with("org", "flow", input_dict, "1.0.0")
     assert result == {"result": "success"}
@@ -25,7 +25,7 @@ async def test_run_flow(mira_client):
 
     with patch.object(mira_client.console, 'run_flow', new_callable=AsyncMock) as mock_run:
         mock_run.return_value = {"result": "success"}
-        result = await mira_client.run_flow(flow_config, input_dict)
+        result = await mira_client.flow.run(flow_config, input_dict)
 
     mock_run.assert_called_once_with(flow_config.dict(), input_dict)
     assert result == {"result": "success"}
@@ -38,7 +38,7 @@ async def test_get_flow(mira_client):
             "private": True,
             "version": "1.0.0"
         }
-        flow = await mira_client.get_flow("org/flow/1.0.0")
+        flow = await mira_client.flow.get("org/flow/1.0.0")
 
     mock_get.assert_called_once_with("org", "flow", "1.0.0")
     assert isinstance(flow, Flow)
@@ -51,7 +51,7 @@ async def test_get_flow(mira_client):
 async def test_get_flows_by_author(mira_client):
     with patch.object(mira_client.console, 'get_flows_by_author', new_callable=AsyncMock) as mock_get:
         mock_get.return_value = [{"org": "org", "name": "flow1"}, {"org": "org", "name": "flow2"}]
-        flows = await mira_client.get_flows_by_author("@author")
+        flows = await mira_client.flow.get_by_author("@author")
 
     mock_get.assert_called_once_with("author")
     assert len(flows) == 2
@@ -60,11 +60,11 @@ async def test_get_flows_by_author(mira_client):
 
 @pytest.mark.asyncio
 async def test_deploy_flow(mira_client):
-    flow = Flow("@org/flow", FlowConfig({"name": "test_flow"}), private=True, version="1.0.0")
+    flow = Flow("org/flow", FlowConfig({"name": "test_flow"}), private=True, version="1.0.0")
 
     with patch.object(mira_client.console, 'deploy_flow', new_callable=AsyncMock) as mock_deploy:
         mock_deploy.return_value = {"result": "success"}
-        result = await mira_client.deploy_flow(flow)
+        result = await mira_client.flow.deploy(flow)
 
     mock_deploy.assert_called_once_with("org", "flow", flow.config.dict(), True, "1.0.0")
     assert result == {"result": "success"}
@@ -80,7 +80,7 @@ async def test_get_prompt(mira_client):
             "variables": {},
             "prompt_id": "123"
         }
-        prompt = await mira_client.get_prompt("org/prompt/1.0.0")
+        prompt = await mira_client.prompt.get("org/prompt/1.0.0")
 
     mock_get.assert_called_once_with("org", "prompt", "1.0.0")
     assert isinstance(prompt, Prompt)
@@ -96,7 +96,7 @@ async def test_create_prompt(mira_client):
 
     with patch.object(mira_client.console, 'create_prompt', new_callable=AsyncMock) as mock_create:
         mock_create.return_value = {"data": {"prompt_id": "123"}}
-        result = await mira_client.create_prompt(prompt)
+        result = await mira_client.prompt.create(prompt)
 
     mock_create.assert_called_once_with("org", "prompt", "1.0.0", "Test content", {"var": "value"})
     assert result.prompt_id == "123"
@@ -110,7 +110,7 @@ async def test_update_prompt(mira_client):
         mock_get.return_value = {"prompt_id": "123"}
         with patch.object(mira_client.console, 'add_prompt_version', new_callable=AsyncMock) as mock_update:
             mock_update.return_value = {"data": {"prompt_id": "456"}}
-            result = await mira_client.update_prompt(prompt)
+            result = await mira_client.prompt.update(prompt)
 
     mock_get.assert_called_once_with("org", "prompt", None)
     mock_update.assert_called_once_with("123", "1.1.0", "Updated content", {"var": "new_value"})

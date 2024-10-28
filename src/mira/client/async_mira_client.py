@@ -63,42 +63,11 @@ class Prompt:
 
 
 
-class AsyncMiraClient:
-    def __init__(self, config=None):
-        self.config = config or {}
-        self.console = AsyncConsole(self.config.get("API_KEY"))
+class PromptOperations:
+    def __init__(self, console):
+        self.console = console
 
-    async def execute_flow(self, flow: Flow, input_dict: dict):
-        response = await self.console.execute_flow(flow.org, flow.name, input_dict, flow.version)
-        return response
-
-    async def run_flow(self, flow_config: FlowConfig, input_dict: dict):
-        response = await self.console.run_flow(flow_config.dict(), input_dict)
-        return response
-
-    async def get_flow(self, flow_name: str) -> Flow:
-        version = None
-        if len(flow_name.split("/")) > 2:
-            version = flow_name.split("/")[-1]
-        org, name = split_name(flow_name)
-        flow_dict = await self.console.get_flow(org, name, version)
-        return Flow(flow_name, FlowConfig(flow_dict.get('config')), flow_dict.get('private'), flow_dict.get('version'))
-
-    async def get_flows_by_author(self, author_name: str) -> list[Flow]:
-        if len(author_name) > 1 and author_name[0] == "@":
-            author_name = author_name[1:]
-        flows_list = await self.console.get_flows_by_author(author_name)
-        return flows_list
-        # return [Flow(f"{flow['org']}/{flow[' name']}", FlowConfig(flow.get('config', {}))) for flow in flows_list]
-
-    async def deploy_flow(self, flow: Flow):
-        if len(flow.org) > 1 and flow.org[0] == "@":
-            flow.org = flow.org[1:]
-        response = await self.console.deploy_flow(flow.org, flow.name, flow.config.dict(), flow.private, flow.version)
-        return response
-
-    # Prompts
-    async def get_prompt(self, prompt_name: str) -> Prompt:
+    async def get(self, prompt_name: str) -> Prompt:
         version = None
         if len(prompt_name.split("/")) > 2:
             version = prompt_name.split("/")[-1]
@@ -108,31 +77,68 @@ class AsyncMiraClient:
         prompt.prompt_id = prompt_dict['prompt_id']
         return prompt
 
-    async def create_prompt(self, prompt: Prompt) -> Prompt:
+    async def create(self, prompt: Prompt) -> Prompt:
         result = await self.console.create_prompt(prompt.org, prompt.name, prompt.version, prompt.content, prompt.variables)
         prompt.prompt_id = result['data']['prompt_id']
         return prompt
 
-    async def update_prompt(self, prompt: Prompt) -> Prompt:
+    async def update(self, prompt: Prompt) -> Prompt:
         current_prompt = await self.console.get_prompt_version(prompt.org, prompt.name, None)
         result = await self.console.add_prompt_version(current_prompt['prompt_id'], prompt.version, prompt.content, prompt.variables)
         prompt.prompt_id = result['data']['prompt_id']
         return prompt
 
-    async def get_prompts_by_author(self, author_name: str) -> list[Prompt]:
+    async def get_by_author(self, author_name: str) -> list[Prompt]:
         if len(author_name) > 1 and author_name[0] == "@":
             author_name = author_name[1:]
         prompts_list = await self.console.get_prompts_by_author(author_name)
         # return [Prompt(p['author_name'], p['prompt_name'], None , p['content'], p.get('variables')) for p in prompts_list]
         return prompts_list
 
-    async def get_all_versions_by_prompt(self, prompt: Prompt) -> list[Prompt]:
+    async def get_all_versions(self, prompt: Prompt) -> list[Prompt]:
         versions = await self.console.get_all_versions_by_prompt(prompt.prompt_id)
         print(versions)
         return [Prompt(f"{prompt.org}/{prompt.name}", v['content'], v['version'], v.get('variables')) for v in versions]
         # return versions
 
-    async def add_knowledge(self, knowledge_name: str, absolute_file_path: str):
+class FlowOperations:
+    def __init__(self, console):
+        self.console = console
+
+    async def execute(self, flow: Flow, input_dict: dict):
+        response = await self.console.execute_flow(flow.org, flow.name, input_dict, flow.version)
+        return response
+
+    async def run(self, flow_config: FlowConfig, input_dict: dict):
+        response = await self.console.run_flow(flow_config.dict(), input_dict)
+        return response
+
+    async def get(self, flow_name: str) -> Flow:
+        version = None
+        if len(flow_name.split("/")) > 2:
+            version = flow_name.split("/")[-1]
+        org, name = split_name(flow_name)
+        flow_dict = await self.console.get_flow(org, name, version)
+        return Flow(flow_name, FlowConfig(flow_dict.get('config')), flow_dict.get('private'), flow_dict.get('version'))
+
+    async def get_by_author(self, author_name: str) -> list[Flow]:
+        if len(author_name) > 1 and author_name[0] == "@":
+            author_name = author_name[1:]
+        flows_list = await self.console.get_flows_by_author(author_name)
+        return flows_list
+        # return [Flow(f"{flow['org']}/{flow[' name']}", FlowConfig(flow.get('config', {}))) for flow in flows_list]
+
+    async def deploy(self, flow: Flow):
+        if len(flow.org) > 1 and flow.org[0] == "@":
+            flow.org = flow.org[1:]
+        response = await self.console.deploy_flow(flow.org, flow.name, flow.config.dict(), flow.private, flow.version)
+        return response
+
+class KnowledgeOperations:
+    def __init__(self, console):
+        self.console = console
+
+    async def add(self, knowledge_name: str, absolute_file_path: str):
         org, knowledge_name = split_name(knowledge_name)
 
         if not os.path.exists(absolute_file_path):
@@ -152,7 +158,15 @@ class AsyncMiraClient:
 
         return await self.console.add_knowledge(absolute_file_path, org, knowledge_name)
 
-    async def get_knowledge_context_for_prompt(self, knowledge_name: str, prompt_text: str):
+    async def get_context_for_prompt(self, knowledge_name: str, prompt_text: str):
         org, knowledge_name = split_name(knowledge_name)
         response = await self.console.get_knowledge_context_for_prompt(org, knowledge_name, prompt_text)
         return response
+
+class AsyncMiraClient:
+    def __init__(self, config=None):
+        self.config = config or {}
+        self.console = AsyncConsole(self.config.get("API_KEY"))
+        self.prompt = PromptOperations(self.console)
+        self.flow = FlowOperations(self.console)
+        self.knowledge = KnowledgeOperations(self.console)

@@ -66,41 +66,11 @@ class Prompt:
         return f"{self.org}/{self.name}"
 
 
-class MiraClient:
-    def __init__(self, config=None):
-        self.config = config or {}
-        self.console = Console(self.config.get("API_KEY"))
+class PromptOperations:
+    def __init__(self, console):
+        self.console = console
 
-    def execute_flow(self, flow: Flow, input_dict: dict):
-        # if flow.type == FlowType.COMPLEX:
-        #     raise ValueError("Only primitive flows can be directly executed. Complex flows must be run through a different method.")
-        return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version, flow.type.value)
-
-    def run_flow(self, flow_config: FlowConfig, input_dict: dict):
-        return self.console.run_flow(flow_config.dict(), input_dict)
-
-    def get_flow(self, flow_name: str) -> Flow:
-        version = None
-        if len(flow_name.split("/")) > 2:
-            version = flow_name.split("/")[-1]
-        org, name = split_name(flow_name)
-        flow_dict = self.console.get_flow(org, name, version)
-        return Flow(flow_name, flow_dict.get('config'), flow_dict.get('private'), flow_dict.get('version'))
-
-    def get_flows_by_author(self, author_name: str) -> list[Flow]:
-        if len(author_name) > 1 and author_name[0] == "@":
-            author_name = author_name[1:]
-        flows_list = self.console.get_flows_by_author(author_name)
-        return flows_list
-        # return [Flow(f"{flow['org']}/{flow[' name']}", FlowConfig(flow.get('config', {}))) for flow in flows_list]
-
-    def deploy_flow(self, flow: Flow):
-        if len(flow.org) > 1 and flow.org[0] == "@":
-            flow.org = flow.org[1:]
-        return self.console.deploy_flow(flow.org, flow.name, flow.config.dict(), flow.private, flow.version, flow.type.value)
-
-    # Prompts
-    def get_prompt(self, prompt_name: str) -> Prompt:
+    def get(self, prompt_name: str) -> Prompt:
         version = None
         if len(prompt_name.split("/")) > 2:
             version = prompt_name.split("/")[-1]
@@ -110,31 +80,61 @@ class MiraClient:
         prompt.prompt_id = prompt_dict['prompt_id']
         return prompt
 
-    def create_prompt(self, prompt: Prompt) -> Prompt:
+    def create(self, prompt: Prompt) -> Prompt:
         result = self.console.create_prompt(prompt.org, prompt.name, prompt.version, prompt.content, prompt.variables)
         prompt.prompt_id = result['data']['prompt_id']
         return prompt
 
-    def update_prompt(self, prompt: Prompt) -> Prompt:
+    def update(self, prompt: Prompt) -> Prompt:
         current_prompt = self.console.get_prompt_version(prompt.org, prompt.name, None)
         result = self.console.add_prompt_version(current_prompt['prompt_id'], prompt.version, prompt.content, prompt.variables)
         prompt.prompt_id = result['data']['prompt_id']
         return prompt
 
-    def get_prompts_by_author(self, author_name: str) -> list[Prompt]:
+    def get_by_author(self, author_name: str) -> list[Prompt]:
         if len(author_name) > 1 and author_name[0] == "@":
             author_name = author_name[1:]
-        prompts_list = self.console.get_prompts_by_author(author_name)
-        # return [Prompt(p['author_name'], p['prompt_name'], None , p['content'], p.get('variables')) for p in prompts_list]
-        return prompts_list
+        return self.console.get_prompts_by_author(author_name)
 
-    def get_all_versions_by_prompt(self, prompt: Prompt) -> list[Prompt]:
+    def get_all_versions(self, prompt: Prompt) -> list[Prompt]:
         versions = self.console.get_all_versions_by_prompt(prompt.prompt_id)
-        print(versions)
         return [Prompt(f"{prompt.org}/{prompt.name}", v['content'], v['version'], v.get('variables')) for v in versions]
-        # return versions
 
-    def add_knowledge(self, knowledge_name: str, absolute_file_path: str):
+
+class FlowOperations:
+    def __init__(self, console):
+        self.console = console
+
+    def execute(self, flow: Flow, input_dict: dict):
+        return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version, flow.type.value)
+
+    def run(self, flow_config: FlowConfig, input_dict: dict):
+        return self.console.run_flow(flow_config.dict(), input_dict)
+
+    def get(self, flow_name: str) -> Flow:
+        version = None
+        if len(flow_name.split("/")) > 2:
+            version = flow_name.split("/")[-1]
+        org, name = split_name(flow_name)
+        flow_dict = self.console.get_flow(org, name, version)
+        return Flow(flow_name, flow_dict.get('config'), flow_dict.get('private'), flow_dict.get('version'))
+
+    def get_by_author(self, author_name: str) -> list[Flow]:
+        if len(author_name) > 1 and author_name[0] == "@":
+            author_name = author_name[1:]
+        return self.console.get_flows_by_author(author_name)
+
+    def deploy(self, flow: Flow):
+        if len(flow.org) > 1 and flow.org[0] == "@":
+            flow.org = flow.org[1:]
+        return self.console.deploy_flow(flow.org, flow.name, flow.config.dict(), flow.private, flow.version, flow.type.value)
+
+
+class KnowledgeOperations:
+    def __init__(self, console):
+        self.console = console
+
+    def add(self, knowledge_name: str, absolute_file_path: str):
         org, knowledge_name = split_name(knowledge_name)
 
         if not os.path.exists(absolute_file_path):
@@ -154,6 +154,15 @@ class MiraClient:
 
         return self.console.add_knowledge(absolute_file_path, org, knowledge_name)
 
-    def get_knowledge_context_for_prompt(self, knowledge_name: str, prompt_text: str):
+    def get_context_for_prompt(self, knowledge_name: str, prompt_text: str):
         org, knowledge_name = split_name(knowledge_name)
         return self.console.get_knowledge_context_for_prompt(org, knowledge_name, prompt_text)
+
+
+class MiraClient:
+    def __init__(self, config=None):
+        self.config = config or {}
+        self.console = Console(self.config.get("API_KEY"))
+        self.prompt = PromptOperations(self.console)
+        self.flow = FlowOperations(self.console)
+        self.knowledge = KnowledgeOperations(self.console)
