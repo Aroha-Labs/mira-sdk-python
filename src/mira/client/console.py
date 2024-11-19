@@ -97,9 +97,17 @@ class Console:
             params = {
                 "version": version
         }
-
         return self._request(method="get", path=path, query_params=params).get("data")
     # TODO: Improve data return through request
+
+    def get_yaml_flow(self, author_name, flow_name, version):
+        path = f"v1/flows/yaml/{author_name}/{flow_name}"
+        params = {}
+        if version:
+            params = {
+                "version": version
+        }
+        return self._request(method="get", path=path, query_params=params).get("data")
 
     def get_flows_by_author(self, author_name):
         path = f"v1/flows/flows/{author_name}"
@@ -112,7 +120,6 @@ class Console:
             "flow": flow_config,
             "type": flow_type
         }
-        print(json_data)
         if version:
             params = {
                 "version": version

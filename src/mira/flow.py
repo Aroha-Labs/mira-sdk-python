@@ -338,15 +338,15 @@ class Flow:
         return new_flow
 
 
-
-def get_model(provider: str, model_name: str):
-    set1 = {"qwen-14b", "claude-3-haiku"}
-    set2 = {"deepseek-coder", "gpt-4o-mini"}
-    if model_name in set1:
-        return f"{provider}/{model_name}"
-    elif model_name in set2:
-        return f"{model_name}"
-    else:
-        raise Exception("Model not supported")
+# TODO: Move this to microservice
+# def get_model(provider: str, model_name: str):
+#     set1 = {"qwen-14b", "claude-3-haiku"}
+#     set2 = {"deepseek-coder", "gpt-4o-mini"}
+#     if model_name in set1:
+#         return f"{provider}/{model_name}"
+#     elif model_name in set2:
+#         return f"{model_name}"
+#     else:
+#         raise Exception("Model not supported")
 
 

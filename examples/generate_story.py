@@ -5,7 +5,7 @@ from src.mira import Flow
 
 
 # Initialize the flow from the YAML file
-flow = Flow('src/templates/person.yaml')
+flow = Flow(source='src/templates/person.yaml')
 
 # Define the input for our story generation
 input_text = {"coin": "ZRX", "date": "Ice age"}
