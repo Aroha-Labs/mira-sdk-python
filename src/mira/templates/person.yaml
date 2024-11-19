@@ -1,26 +1,40 @@
-name: SimpleTextGenerator
-description: Persona Impersonator
-resources:
-  prompts:
-  - second_prompt: Generate a short story about {person} at {club}
-    type: local
-  - main_prompt: '@aroha-labs/klok/1.0.0'
-    type: mira
-  knowledge:
-    - writing_tips: '@test-author/test-knowledge'
-  models:
-    story_generator:
-      type: tric/llama
-components:
-  story_generator:
-    type: Generator
-    config:
-      prompt: '{resources.prompts.main_prompt}'
-      model: '{resources.models.story_generator}'
-flow:
-- story_generator:
-    inputs:
-    - person: request
-      club: request
-    outputs:
-    - target: response
+version: "1.0.0"
+
+# Basic metadata for the agent
+metadata:
+  name: character-story-generator
+  description: Generates short stories about characters in specific locations
+  author: sanchay
+  private: false
+  tags: [story, creative, character]
+
+# Define the input variables required
+inputs:
+  person:
+    type: string
+    description: Main character of the story
+    required: true
+    example: "William Shakspeare"
+  club:
+    type: string
+    description: Location where the story takes place
+    required: true
+    example: "Jazz Club"
+
+# LLM configuration
+model:
+  provider: openrouter  # or anthropic, openai, meta, etc.
+  name: llama-3.1-8b-instruct
+
+# Dataset configuration (Optional)
+dataset:
+  source: test-author/test-knowledge  # Vector DB/Indexify collection/namespace
+
+# Prompt template configuration
+prompt: |
+  Generate a short story about {person} at {club}.
+  The story should be engaging and approximately 3 paragraphs long.
+  Include vivid details about the setting and character's actions.
+
+readme: |
+  Example readme
