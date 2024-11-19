@@ -97,7 +97,7 @@ builder.add_component(
     "Generator",
     {
         "prompt": "{resources.prompts.main_prompt}",
-        "model": "{resources.models.story_generator}",
+        "models": "{resources.models.story_generator}",
     },
 )
 
