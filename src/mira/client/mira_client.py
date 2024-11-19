@@ -1,5 +1,6 @@
 import os
 from enum import Enum
+from typing import Optional
 import yaml
 
 from .console import Console
@@ -114,6 +115,9 @@ class FlowOperations:
         if len(flow.metadata.author) > 1 and flow.metadata.author[0] == "@":
             flow.metadata.author = flow.metadata.author[1:]
         return self.console.deploy_flow(flow.metadata.author, flow.metadata.name, flow.to_dict(), flow.version)
+
+    def get_yaml_flow(self, author_name: str, flow_name: str, version: Optional[str] = None) -> dict:
+        return self.console.get_yaml_flow(author_name, flow_name, version)
 
     def execute(self, flow_name: str, input_dict: dict):
         version = None
