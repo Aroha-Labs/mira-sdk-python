@@ -102,8 +102,8 @@ class FlowOperations:
         if len(flow_name.split("/")) > 2:
             version = flow_name.split("/")[-1]
         org, name = split_name(flow_name)
-        flow_dict = self.console.get_flow(org, name, version)
-        return Flow(flow_dict.get('config'))
+        flow_dict = self.console.get_yaml_flow(org, name, version)
+        return Flow(source=flow_dict)
 
     def get_by_author(self, author_name: str) -> list[Flow]:
         if len(author_name) > 1 and author_name[0] == "@":

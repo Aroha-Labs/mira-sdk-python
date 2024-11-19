@@ -1,12 +1,12 @@
-version: "1.0.0"
+version: "1.12.0"
 
 # Basic metadata for the agent
 metadata:
   name: character-story-generator
   description: Generates short stories about characters in specific locations
-  author: sanchay
+  author: test-username
   private: false
-  tags: [story, creative, character]
+  tags: ["story", "creative", "character"]
 
 # Define the input variables required
 inputs:
