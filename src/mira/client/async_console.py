@@ -1,11 +1,15 @@
 import requests
 import aiohttp
+import logging
+from src.mira.constants import CONSOLE_BFF_URL
+
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class AsyncConsole:
     def __init__(self, api_key):
         self.api_key = api_key
-        self.base_url = "https://console-bff.stg.arohalabs.dev"
+        self.base_url = CONSOLE_BFF_URL
         # self.base_url = "http://0.0.0.0:9000"
 
     async def _request(self, method, path, query_params=None, json_data=None, files=None, data=None):
@@ -30,7 +34,7 @@ class AsyncConsole:
                         raise Exception(f"Response status: {response.status}, detail: {text}")
                     return await response.json()
             except aiohttp.ClientError as e:
-                print(f"An error occurred: {e}")
+                logging.error(f"An error occurred: {e}")
                 return None
 
     async def create_prompt(self, author_name, prompt_name, version, content, variables):
