@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock, patch
-from src.mira.client.mira_client import MiraClient, Flow, FlowConfig, Prompt, FlowType
+from mira_sdk.mira.client.mira_client import MiraClient, Flow, FlowConfig, Prompt, FlowType
 
 @pytest.fixture
 def mira_client():
