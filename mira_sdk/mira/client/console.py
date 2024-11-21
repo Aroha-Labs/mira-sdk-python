@@ -1,6 +1,6 @@
 import requests
 import logging
-from src.mira.constants import CONSOLE_BFF_URL
+from mira_sdk.mira.constants import CONSOLE_BFF_URL
 
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
