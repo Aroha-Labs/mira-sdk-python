@@ -13,6 +13,9 @@ dependencies = [
     "semantic-version>=2.10.0",
     "aiohttp>=3.10.10",
     "pytest-asyncio>=0.24.0",
+    "build>=1.2.2.post1",
+    "twine>=5.1.1",
+    "setuptools>=75.6.0",
 ]
 requires-python = "==3.10.*"
 readme = "README.md"
