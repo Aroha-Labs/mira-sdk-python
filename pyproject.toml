@@ -1,6 +1,6 @@
 [project]
 name = "mira_sdk"  # Change to match setup.py
-version = '0.1.3'
+version = '0.1.4'
 description = "A Python SDK for the Mira API"
 authors = [
     {name = "sarim2000", email = "sarimbleedblue@gmail.com"},
