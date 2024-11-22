@@ -110,6 +110,15 @@ class FlowOperations:
             author_name = author_name[1:]
         return self.console.get_flows_by_author(author_name)
 
+    def get_flows_by_tag(self, tag: str) -> list[Flow]:
+        return self.console.get_flows_by_tag(tag)
+
+    def search_flow(self, query: str) -> list[Flow]:
+        return self.console.search_flow(query)
+
+    def get_all_versions(self, flow: Flow) -> list[Flow]:
+        return self.console.get_all_versions_by_flow(flow.org, flow.name, flow.version)
+
     def deploy(self, flow: Flow):
         if len(flow.metadata.author) > 1 and flow.metadata.author[0] == "@":
             flow.metadata.author = flow.metadata.author[1:]
