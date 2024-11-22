@@ -2,11 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name="mira_sdk",  # Keep underscore here for Python import
-    version="0.1.0",  # Match version with pyproject.toml
+    version='0.1.1',  # Match version with pyproject.toml
     description="A Python SDK for the Mira API",
     long_description=open("README.md").read(),
     url="https://github.com/Aroha-Labs/mira-sdk-python",
-    packages=find_packages(),  # This is crucial - it was missing
+    packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -15,8 +15,6 @@ setup(
     python_requires="==3.10.*",
     install_requires=[
         "pyyaml>=6.0.2",
-        "openai>=1.43.0",
-        "click>=8.1.7",
         "requests>=2.32.3",
         "semantic-version>=2.10.0",
         "aiohttp>=3.10.10",
