@@ -130,7 +130,7 @@ class Console:
         params = {"keyword": query}
         return self._request(method="get", path=path, query_params=params)
 
-    def get_all_versions_by_flow(self, author_name, flow_name, version):
+    def get_all_versions_by_flow(self, author_name, flow_name):
         path = f"v1/flows/flows/{author_name}/{flow_name}/versions"
         return self._request(method="get", path=path)
 
