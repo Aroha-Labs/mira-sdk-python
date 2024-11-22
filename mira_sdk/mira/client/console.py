@@ -118,6 +118,22 @@ class Console:
         return self._request(method="get", path=path).get("data")
     # TODO: Improve data return through request
 
+    def get_flows_by_tag(self, tag: str, user_id: str = None):
+        path = f"v1/flows/flows_tag/tag_search"
+        params = {"tag": tag}
+        if user_id:
+            params["user_id"] = user_id
+        return self._request(method="get", path=path, query_params=params)
+
+    def search_flow(self, query: str):
+        path = f"v1/flows/flows_keyword/flow_search"
+        params = {"keyword": query}
+        return self._request(method="get", path=path, query_params=params)
+
+    def get_all_versions_by_flow(self, author_name, flow_name):
+        path = f"v1/flows/flows/{author_name}/{flow_name}/versions"
+        return self._request(method="get", path=path)
+
     def deploy_flow(self, author_name, flow_name, flow_config, version=None, flow_type="PRIMITIVE"):
         path = f"v1/flows/deploy/{author_name}/{flow_name}"
         json_data = {
