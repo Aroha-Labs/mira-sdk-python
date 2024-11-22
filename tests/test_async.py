@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import AsyncMock, patch
-from src.mira.client.async_mira_client import AsyncMiraClient, Flow, FlowConfig, Prompt
+from mira_sdk.mira.client.async_mira_client import AsyncMiraClient, Flow, FlowConfig, Prompt
 
 @pytest.fixture
 def mira_client():

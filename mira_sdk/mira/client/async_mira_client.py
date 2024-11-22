@@ -97,7 +97,6 @@ class PromptOperations:
 
     async def get_all_versions(self, prompt: Prompt) -> list[Prompt]:
         versions = await self.console.get_all_versions_by_prompt(prompt.prompt_id)
-        print(versions)
         return [Prompt(f"{prompt.org}/{prompt.name}", v['content'], v['version'], v.get('variables')) for v in versions]
         # return versions
 

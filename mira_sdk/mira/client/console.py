@@ -1,11 +1,15 @@
 import requests
+import logging
+from mira_sdk.mira.constants import CONSOLE_BFF_URL
+
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Console:
     def __init__(self, api_key):
         self.api_key = api_key
 
-        self.base_url = "https://console-bff.stg.arohalabs.dev"
+        self.base_url = CONSOLE_BFF_URL
         # self.base_url = "http://0.0.0.0:9000"
         # self.base_url = "http://0.0.0.0:8002"
 
@@ -31,7 +35,7 @@ class Console:
             return response.json()
         except requests.exceptions.RequestException as e:
             # Handle any request-related errors
-            print(f"An error occurred: {e}")
+            logging.error(f"An error occurred: {e}")
             return None
 
     def create_prompt(self, author_name, prompt_name, version, content, variables):

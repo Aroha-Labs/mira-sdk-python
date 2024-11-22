@@ -63,7 +63,7 @@ The Mira SDK provides a simple way to execute flows and build custom flows progr
 To execute a flow using the MiraClient:
 
 ```python
-from src.mira.client.mira_client import MiraClient
+from mira_sdk.mira.client.mira_client import MiraClient
 
 client = MiraClient("flows/person.yaml")
 result = client.execute({"coin": "Solana"})
@@ -78,7 +78,7 @@ This script loads a flow from a YAML file and executes it with the given input.
 To create a custom flow using the FlowBuilder:
 
 ```python
-from src.mira.builder.flow_builder import FlowBuilder
+from mira_sdk.mira.builder.flow_builder import FlowBuilder
 
 builder = FlowBuilder()
 
@@ -87,7 +87,8 @@ builder.set_name("SimpleTextGenerator")
 builder.set_description("Persona Impersonator")
 
 # Add resources
-builder.add_prompt([{"second_prompt": "Generate a short story about {person} at {club}", "type": "local"}, {"main_prompt": "@aroha-labs/klok/1.0.0", "type": "mira"}])
+builder.add_prompt([{"second_prompt": "Generate a short story about {person} at {club}", "type": "local"},
+                    {"main_prompt": "@aroha-labs/klok/1.0.0", "type": "mira"}])
 builder.add_resource("knowledge", "writing_tips", {"file": "writing_tips.txt"})
 builder.add_resource("models", "story_generator", {"type": "gpt-3.5-turbo"})
 
