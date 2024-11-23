@@ -158,11 +158,11 @@ class Console:
         return self._request(method="get", path=path).get("data")
 
     def add_knowledge(self, file_path, author_name, knowledge_name):
-        path = "v1/knowledge/upload"
+        path = "v1/knowledge/upload/"
         files = {'file': open(file_path, 'rb')}
         data = {
             'author_name': author_name,
-            'knowledge_name': knowledge_name
+            'name': knowledge_name
         }
         return self._request(method="post", path=path, files=files, data=data)
 

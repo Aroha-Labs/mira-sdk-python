@@ -10,7 +10,6 @@ class AsyncConsole:
     def __init__(self, api_key):
         self.api_key = api_key
         self.base_url = CONSOLE_BFF_URL
-        # self.base_url = "http://0.0.0.0:9000"
 
     async def _request(self, method, path, query_params=None, json_data=None, files=None, data=None):
         url = f"{self.base_url}/{path}"
