@@ -1,5 +1,6 @@
 import os
 from enum import Enum
+from typing import Optional
 import yaml
 
 from .console import Console
@@ -137,25 +138,35 @@ class KnowledgeOperations:
     def __init__(self, console):
         self.console = console
 
-    def add(self, knowledge_name: str, absolute_file_path: str):
-        org, knowledge_name = split_name(knowledge_name)
+    def add_source(self, dataset_name: str, file_path: Optional[str] = None, url: Optional[str] = None):
+        if file_path is None and url is None:
+            raise ValueError("Either file_path or url must be provided.")
 
-        if not os.path.exists(absolute_file_path):
-            raise FileNotFoundError(f"The file {absolute_file_path} does not exist.")
+        org, dataset_name = split_name(dataset_name)
+        if file_path is not None:
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(f"The file {file_path} does not exist.")
 
-        if not os.access(absolute_file_path, os.R_OK):
-            raise PermissionError(f"The file {absolute_file_path} is not readable.")
+            if not os.access(file_path, os.R_OK):
+                raise PermissionError(f"The file {file_path} is not readable.")
 
-        max_size = 200 * 1024 * 1024  # 200MB in bytes
-        if os.path.getsize(absolute_file_path) > max_size:
-            raise ValueError(f"The file {absolute_file_path} exceeds the maximum allowed size of 200MB.")
+            max_size = 200 * 1024 * 1024  # 200MB in bytes
+            if os.path.getsize(file_path) > max_size:
+                raise ValueError(f"The file {file_path} exceeds the maximum allowed size of 200MB.")
 
-        allowed_types = ['.csv', '.txt', '.pdf', '.zip', '.md']
-        file_extension = os.path.splitext(absolute_file_path)[1].lower()
-        if file_extension not in allowed_types:
-            raise ValueError(f"Unsupported file type. Allowed types are: {', '.join(allowed_types)}")
+            allowed_types = ['.csv', '.txt', '.pdf', '.zip', '.md']
+            file_extension = os.path.splitext(file_path)[1].lower()
+            if file_extension not in allowed_types:
+                raise ValueError(f"Unsupported file type. Allowed types are: {', '.join(allowed_types)}")
 
-        return self.console.add_knowledge(absolute_file_path, org, knowledge_name)
+            return self.console.add_knowledge_from_file(file_path, org, dataset_name)
+
+        if url is not None:
+            return self.console.add_knowledge_from_url(url, org, dataset_name)
+
+
+    def create_dataset(self, author_name: str, dataset_name: str, description: Optional[str] = None):
+        return self.console.create_dataset(author_name, dataset_name, description)
 
     def get_context_for_prompt(self, knowledge_name: str, prompt_text: str):
         org, knowledge_name = split_name(knowledge_name)
