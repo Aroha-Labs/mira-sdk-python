@@ -1,21 +1,19 @@
-name: Auto-bump Version and Publish to PyPI
+name: Publish to PyPI on Tag Push
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'  # Trigger the workflow only on tag push that matches version pattern
 
 jobs:
-  bump-and-publish:
+  build-and-publish:
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Check out the code with full history
+      # Step 1: Check out the code
       - name: Check out code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Important for version bumping
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # Fetch all history for all tags and branches
 
       # Step 2: Set up Python environment
       - name: Set up Python
@@ -27,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install build twine bump2version setuptools wheel
+          pip install build twine setuptools wheel
 
       # Step 4: Configure Git
       - name: Configure Git
@@ -35,29 +33,13 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      # Step 5: Auto-bump the version
-      - name: Auto-bump version
-        run: |
-          current_version=$(python setup.py --version)
-          echo "Current version: $current_version"
-          bump2version --allow-dirty patch
-        continue-on-error: false
-
-      # Step 6: Push changes
-      - name: Push changes
-        run: |
-          git push --follow-tags
-          git push origin main --tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Step 7: Build the package
+      # Step 5: Build the package
       - name: Build the package
         run: |
           python -m build
           ls dist/  # Debug: list built distributions
 
-      # Step 8: Publish to PyPI
+      # Step 6: Publish to PyPI
       - name: Publish to PyPI
         env:
           TWINE_USERNAME: __token__
