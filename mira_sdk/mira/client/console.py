@@ -9,10 +9,7 @@ logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %
 class Console:
     def __init__(self, api_key):
         self.api_key = api_key
-
         self.base_url = CONSOLE_BFF_URL
-        # self.base_url = "http://0.0.0.0:9000"
-        # self.base_url = "http://0.0.0.0:8002"
 
     def _request(self, method, path, query_params=None, json_data=None, files=None, data=None):
         url = f"{self.base_url}/{path}"
@@ -158,13 +155,12 @@ class Console:
         path = f"v1/prompts/{prompt_id}/versions"
         return self._request(method="get", path=path).get("data")
 
-
     def add_knowledge_from_file(self, file_path, author_name, knowledge_name):
-        path = "v1/knowledge/upload"
+        path = "v1/knowledge/upload/"
         files = {'file': open(file_path, 'rb')}
         data = {
             'author_name': author_name,
-            'knowledge_name': knowledge_name
+            'name': knowledge_name
         }
         return self._request(method="post", path=path, files=files, data=data)
 
