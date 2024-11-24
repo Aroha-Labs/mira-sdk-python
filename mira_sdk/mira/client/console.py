@@ -168,10 +168,10 @@ class Console:
         path = "v1/knowledge/process_url/"
         data = {
             'author_name': author_name,
-            'knowledge_name': knowledge_name,
+            'name': knowledge_name,
             'url': url
         }
-        return self._request(method="post", path=path, data=data)
+        return self._request(method="post", path=path, json_data=data)
 
     def create_dataset(self, author_name: str, dataset_name: str, description: Optional[str] = None):
         path = "v1/knowledge/create/"
