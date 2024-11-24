@@ -164,9 +164,9 @@ class KnowledgeOperations:
         if url is not None:
             return self.console.add_knowledge_from_url(url, org, dataset_name)
 
-
-    def create_dataset(self, author_name: str, dataset_name: str, description: Optional[str] = None):
-        return self.console.create_dataset(author_name, dataset_name, description)
+    def create(self, dataset_name: str, description: Optional[str] = None):
+        org, dataset_name = split_name(dataset_name)
+        return self.console.create_dataset(org, dataset_name, description)
 
     def get_context_for_prompt(self, knowledge_name: str, prompt_text: str):
         org, knowledge_name = split_name(knowledge_name)

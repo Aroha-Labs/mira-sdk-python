@@ -4,7 +4,7 @@ version: "1.0.0"
 metadata:
   name: character-story-generator
   description: Generates short stories about characters in specific locations
-  author: sanchay
+  author: test-username
   private: false
   tags: [story, creative, character]
 
