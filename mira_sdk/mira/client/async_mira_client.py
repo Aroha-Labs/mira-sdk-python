@@ -150,7 +150,7 @@ class KnowledgeOperations:
         if os.path.getsize(absolute_file_path) > max_size:
             raise ValueError(f"The file {absolute_file_path} exceeds the maximum allowed size of 200MB.")
 
-        allowed_types = ['.csv', '.txt', '.pdf', '.zip', '.md']
+        allowed_types = ['.csv', '.txt', '.pdf', '.md']
         file_extension = os.path.splitext(absolute_file_path)[1].lower()
         if file_extension not in allowed_types:
             raise ValueError(f"Unsupported file type. Allowed types are: {', '.join(allowed_types)}")
