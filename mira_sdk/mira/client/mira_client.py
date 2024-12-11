@@ -6,6 +6,7 @@ import yaml
 from .console import Console
 from ..flow import Flow
 from ..utils.util import split_name
+from ..integrations.composio import ComposioConfig
 
 
 class FlowLoadError(Exception):
@@ -95,8 +96,8 @@ class FlowOperations:
     # def execute(self, flow: Flow, input_dict: dict):
     #     return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version, flow.type.value)
 
-    def test(self, flow: Flow, input_dict: dict):
-        return self.console.run_flow(flow.to_dict(), input_dict)
+    def test(self, flow: Flow, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
+        return self.console.run_flow(flow.to_dict(), input_dict, composio_config)
 
     def get(self, flow_name: str) -> Flow:
         version = None

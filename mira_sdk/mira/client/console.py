@@ -9,7 +9,8 @@ logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %
 class Console:
     def __init__(self, api_key):
         self.api_key = api_key
-        self.base_url = CONSOLE_BFF_URL
+        # self.base_url = CONSOLE_BFF_URL
+        self.base_url = "http://localhost:9000"
 
     def _request(self, method, path, query_params=None, json_data=None, files=None, data=None):
         url = f"{self.base_url}/{path}"
@@ -84,12 +85,15 @@ class Console:
 
         return self._request(method="post", path=path, json_data=input_dict, query_params=params)
 
-    def run_flow(self, flow_config, input_dict):
+    def run_flow(self, flow_config, input_dict, composio_config):
+
         path = f"v1/flows/flows/run"
         json_data = {
             "flow_config": flow_config,
-            "input": input_dict
+            "input": input_dict,
+            "composio_config": composio_config.dict()
         }
+        print(json_data)
         return self._request(method="post", path=path, json_data=json_data)
 
     def get_flow(self, author_name, flow_name, version):
