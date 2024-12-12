@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from mira_sdk.mira.client.mira_client import MiraClient
 from mira_sdk.mira.flow import Flow
 from mira_sdk.mira.integrations.composio import ComposioConfig
-client = MiraClient(config={"API_KEY": "sb-sanji_test_key"})
+client = MiraClient(config={"API_KEY": ""})
 
 flow = Flow(source="examples/roast.yaml")
 
