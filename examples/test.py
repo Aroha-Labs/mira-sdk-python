@@ -12,5 +12,4 @@ flow = Flow(source="examples/roast.yaml")
 
 input_dict = {"user": "frenzyScholar"}
 
-client.flow.test(flow, input_dict, ComposioConfig(COMPOSIO_API_KEY="ghnhczwth1b1q4hw3d4jai", ACTION="TWITTER_CREATION_OF_A_POST", TASK="Post the following tweet - {content}", ENTITY_ID="goel_2002yash"))
-
+client.flow.test(flow, input_dict, ComposioConfig(COMPOSIO_API_KEY="", ACTION="TWITTER_CREATION_OF_A_POST", TASK="Post the following tweet - {content}", ENTITY_ID=""))
