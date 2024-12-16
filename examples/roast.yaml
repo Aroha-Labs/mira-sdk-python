@@ -1,5 +1,3 @@
-version: "0.0.1"
-
 metadata:
   name: "roast-generator"
   description: "Proficient in creating witty and sarcastic roasts"
