@@ -92,7 +92,6 @@ class Console:
             "input": input_dict,
             "composio_config": composio_config.dict()
         }
-        print(json_data)
         return self._request(method="post", path=path, json_data=json_data)
 
     def get_flow(self, author_name, flow_name, version):
