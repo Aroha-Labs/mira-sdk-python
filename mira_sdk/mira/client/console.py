@@ -84,11 +84,13 @@ class Console:
 
         return self._request(method="post", path=path, json_data=input_dict, query_params=params)
 
-    def run_flow(self, flow_config, input_dict):
+    def run_flow(self, flow_config, input_dict, composio_config):
+
         path = f"v1/flows/flows/run"
         json_data = {
             "flow_config": flow_config,
-            "input": input_dict
+            "input": input_dict,
+            "composio_config": composio_config.dict()
         }
         return self._request(method="post", path=path, json_data=json_data)
 
