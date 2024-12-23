@@ -5,6 +5,7 @@ import yaml
 
 from .console import Console
 from ..flow import Flow
+from ..compound_flow import CompoundFlow
 from ..utils.util import split_name
 from ..integrations.composio import ComposioConfig
 
@@ -96,7 +97,9 @@ class FlowOperations:
     # def execute(self, flow: Flow, input_dict: dict):
     #     return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version, flow.type.value)
 
-    def test(self, flow: Flow, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
+    def test(self, flow: Flow | CompoundFlow, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
+        if isinstance(flow, CompoundFlow):
+            return self.console.run_flow(flow.config, input_dict, composio_config)
         return self.console.run_flow(flow.to_dict(), input_dict, composio_config)
 
     def get(self, flow_name: str) -> Flow:
@@ -122,10 +125,14 @@ class FlowOperations:
         org, name = split_name(flow_name)
         return self.console.get_all_versions_by_flow(org, name)
 
-    def deploy(self, flow: Flow):
+    def deploy(self, flow: Flow | CompoundFlow):
+        if isinstance(flow, CompoundFlow):
+            flow_config = flow.config
+            return self.console.deploy_flow(flow.config.get("metadata", {}).get("author"), flow.config.get("metadata", {}).get("name"), flow_config, flow.config.get("version"), flow.config.get("metadata", {}).get("flow_type"))
+        flow_config = flow.to_dict()
         if len(flow.metadata.author) > 1 and flow.metadata.author[0] == "@":
             flow.metadata.author = flow.metadata.author[1:]
-        return self.console.deploy_flow(flow.metadata.author, flow.metadata.name, flow.to_dict(), flow.version)
+        return self.console.deploy_flow(flow.metadata.author, flow.metadata.name, flow_config, flow.version, flow.metadata.flow_type)
 
     def execute(self, flow_name: str, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
         version = None
