@@ -72,9 +72,15 @@ class Console:
             params["version"] = version
         return self._request(method="get", path=path, query_params=params).get("data")
 
-    def execute_flow(self, author_name, flow_name, input_dict, version, flow_type):
+    def execute_flow(self, author_name, flow_name, input_dict, version, flow_type, composio_config):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
 
+        json_data = {
+            "input": input_dict,
+        }
+        if composio_config is not None:
+            json_data["composio_config"] = composio_config.dict()
+            
         params = {}
         if version:
             params = {
@@ -82,7 +88,7 @@ class Console:
                 "type": flow_type
             }
 
-        return self._request(method="post", path=path, json_data=input_dict, query_params=params)
+        return self._request(method="post", path=path, json_data=json_data, query_params=params)
 
     def run_flow(self, flow_config, input_dict, composio_config):
 
@@ -90,8 +96,9 @@ class Console:
         json_data = {
             "flow_config": flow_config,
             "input": input_dict,
-            "composio_config": composio_config.dict()
         }
+        if composio_config is not None:
+            json_data["composio_config"] = composio_config.dict()
         return self._request(method="post", path=path, json_data=json_data)
 
     def get_flow(self, author_name, flow_name, version):

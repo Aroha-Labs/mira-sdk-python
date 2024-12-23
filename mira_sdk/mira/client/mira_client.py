@@ -127,12 +127,12 @@ class FlowOperations:
             flow.metadata.author = flow.metadata.author[1:]
         return self.console.deploy_flow(flow.metadata.author, flow.metadata.name, flow.to_dict(), flow.version)
 
-    def execute(self, flow_name: str, input_dict: dict):
+    def execute(self, flow_name: str, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
         version = None
         if len(flow_name.split("/")) > 2:
             version = flow_name.split("/")[-1]
         org, name = split_name(flow_name)
-        return self.console.execute_flow(org, name, input_dict, version, "PRIMITIVE")
+        return self.console.execute_flow(org, name, input_dict, version, "PRIMITIVE", composio_config)
 
 
 class KnowledgeOperations:
