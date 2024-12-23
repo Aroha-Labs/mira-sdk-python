@@ -7,8 +7,10 @@ class Metadata:
     name: str
     description: str
     author: str
+    flow_type: str
     private: bool = False
     tags: List[str] = field(default_factory=list)
+    
 
     def add_tag(self, tag: str):
         """Add a new tag"""
