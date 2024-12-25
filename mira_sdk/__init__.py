@@ -1,4 +1,4 @@
-__version__ = '0.1.10'
+__version__ = '0.1.11'
 from .mira.flow import Flow
 from .mira.compound_flow import CompoundFlow
 from .mira.client.mira_client import MiraClient
