@@ -13,9 +13,10 @@ dependencies = [
     "pytest-asyncio>=0.24.0",
     "pydantic>=2.10.4",
 ]
-requires-python = ">=3.10.*"
+requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
 
 [tool.pdm]
 distribution = false
+
