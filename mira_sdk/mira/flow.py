@@ -89,7 +89,7 @@ class Flow:
                 description=meta.get('description', ''),
                 author=meta.get('author', ''),
                 private=meta.get('private', False),
-                tags=meta.get('tags', []),
+                tags=[tag.lower().replace(" ", "-") for tag in meta.get('tags', [])],
                 flow_type=meta.get('flow_type', 'primitive')
             )
 
@@ -261,7 +261,7 @@ class Flow:
                 'description': self.metadata.description,
                 'author': self.metadata.author,
                 'private': self.metadata.private,
-                'tags': self.metadata.tags
+                'tags': [tag.lower().replace(" ", "-") for tag in self.metadata.tags]
             },
             'inputs': {
                 name: {
