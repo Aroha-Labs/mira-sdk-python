@@ -8,6 +8,7 @@ from .models.model import Model
 from .utils.yaml import load_yaml, save_yaml
 from .utils.validation import validate_prompt_variables
 
+import semantic_version
 
 class Flow:
     """
@@ -28,8 +29,7 @@ class Flow:
 
     def __init__(
             self,
-            name: Optional[str] = None,
-            source: Optional[Union[str, Dict[str, Any], Path]] = None
+            source: Union[str, Dict[str, Any], Path]
     ):
         """
         Initialize a Flow instance.
@@ -43,25 +43,25 @@ class Flow:
         """
         if source:
             self._load_from_source(source)
-        else:
-            self._init_empty(name or "unnamed-flow")
+        # else:
+        #     self._init_empty(name or "unnamed-flow")
 
-    def _init_empty(self, name: str) -> None:
-        """Initialize an empty flow with default values"""
-        self.version = "1.0.0"
-        self.metadata = Metadata(
-            name=name,
-            description="",
-            author="",
-            tags=[],
-            flow_type="primitive"
-        )
-        self.inputs: Dict[str, Input] = {}
-        self.output_type = "string"
-        self.model = Model.tric()
-        self.dataset_source = None
-        self.prompt = ""
-        self.readme = ""
+    # def _init_empty(self, name: str) -> None:
+    #     """Initialize an empty flow with default values"""
+    #     self.version = "1.0.0"
+    #     self.metadata = Metadata(
+    #         name=name,
+    #         description="",
+    #         author="",
+    #         tags=[],
+    #         flow_type="primitive"
+    #     )
+    #     self.inputs: Dict[str, Input] = {}
+    #     self.output_type = "string"
+    #     self.model = Model.tric()
+    #     self.dataset_source = None
+    #     self.prompt = ""
+    #     self.readme = ""
 
     def _load_from_source(self, source: Union[str, Dict[str, Any], Path]) -> None:
         """
@@ -85,12 +85,12 @@ class Flow:
             # Load metadata
             meta = config.get('metadata', {})
             self.metadata = Metadata(
-                name=meta.get('name', 'unnamed-flow'),
+                name=meta.get('name', ''),
                 description=meta.get('description', ''),
-                author=meta.get('author', ''),
+                author=meta.get('author'),
                 private=meta.get('private', False),
                 tags=meta.get('tags', []),
-                flow_type=meta.get('flow_type', 'primitive')
+                flow_type=meta.get('flow_type', '')
             )
 
             # Load inputs
@@ -105,9 +105,14 @@ class Flow:
 
             # Load model configuration
             model_config = config.get('model', {})
+            # print("Model config: ", model_config)
+            if model_config == None or model_config == {}:
+                raise ValueError("Model configuration is required")
+            # print("Whta neadnk")
+            # print(model_config)
             self.model = Model(
-                provider=model_config.get('provider', 'tric'),
-                name=model_config.get('name', 'llama')
+                provider=model_config.get('provider', ''),
+                name=model_config.get('name', '')
             )
 
             # Load dataset configuration
@@ -119,6 +124,10 @@ class Flow:
 
             # Load readme
             self.readme = config.get('readme', '')
+
+            # Move validation to the end after all attributes are set
+            if not self.validate():
+                raise ValueError("Invalid flow configuration")
 
         except Exception as e:
             raise LoadError(f"Failed to load flow configuration: {str(e)}")
@@ -209,14 +218,38 @@ class Flow:
         """
         try:
             # Validate prompt variables
-            validate_prompt_variables(self.prompt, self.inputs)
 
-            # Validate required fields
+            if hasattr(self, 'version'):
+                if not isinstance(self.version, str):
+                    raise ValidationError("Version must be a semantic version string (e.g., '1.0.0')")
+                try:
+                    semantic_version.Version(self.version)
+                except ValueError:
+                    raise ValidationError("Version must be a semantic version string (e.g., '1.0.0')")
+
+            if not self.metadata:
+                raise ValidationError("Metadata is required")
+
             if not self.metadata.name:
                 raise ValidationError("Flow name is required")
 
+            if not self.metadata.author:
+                raise ValidationError("Flow author is required")
+
+            if not self.metadata.description:
+                raise ValidationError("Flow description is required")
+
+            if not hasattr(self, 'model') or not self.model:
+                raise ValidationError("Model configuration is required")
+            if not self.model.provider:
+                raise ValidationError("Model provider is required")
+            if not self.model.name:
+                raise ValidationError("Model name is required")
+
             if not self.prompt:
                 raise ValidationError("Prompt template is required")
+
+            # validate_prompt_variables(self.prompt, self.inputs)
 
             return True
 
