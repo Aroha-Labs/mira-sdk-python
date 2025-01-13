@@ -8,6 +8,7 @@ from ..flow import Flow
 from ..compound_flow import CompoundFlow
 from ..utils.util import split_name
 from ..integrations.composio import ComposioConfig
+from ..models.file_url_utils import File, URL
 
 
 class FlowLoadError(Exception):
@@ -98,6 +99,23 @@ class FlowOperations:
     #     return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version, flow.type.value)
 
     def test(self, flow: Flow | CompoundFlow, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
+        file_key = None
+        url_key = None
+        for key, value in input_dict.items():
+            if isinstance(value, File):
+                file_key = key
+                file_path = value.file_path
+            if isinstance(value, URL):
+                url_key = key
+                url = value.url
+        
+        if file_key is not None:
+            del input_dict[file_key]
+            input_dict["file_path"] = file_path
+        if url_key is not None:
+            del input_dict[url_key]
+            input_dict["url"] = url
+
         if isinstance(flow, CompoundFlow):
             return self.console.run_flow(flow.config, input_dict, composio_config)
         return self.console.run_flow(flow.to_dict(), input_dict, composio_config)
@@ -136,6 +154,23 @@ class FlowOperations:
 
     def execute(self, flow_name: str, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
         version = None
+        file_key = None
+        url_key = None
+        for key, value in input_dict.items():
+            if isinstance(value, File):
+                file_key = key
+                file_path = value.file_path
+            if isinstance(value, URL):
+                url_key = key
+                url = value.url
+        
+        if file_key is not None:
+            del input_dict[file_key]
+            input_dict["file_path"] = file_path
+        if url_key is not None:
+            del input_dict[url_key]
+            input_dict["url"] = url
+        
         if len(flow_name.split("/")) > 2:
             version = flow_name.split("/")[-1]
         org, name = split_name(flow_name)
