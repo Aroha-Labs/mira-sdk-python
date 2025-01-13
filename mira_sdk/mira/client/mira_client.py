@@ -103,7 +103,7 @@ class FlowOperations:
         for key, value in input_dict.items():
             if isinstance(value, File):
                 input_dict[key] = value.file_path
-            if isinstance(value, Reader):
+            elif isinstance(value, Reader):
                 input_dict[key] = value.url
 
         if isinstance(flow, CompoundFlow):
@@ -144,22 +144,11 @@ class FlowOperations:
 
     def execute(self, flow_name: str, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
         version = None
-        file_key = None
-        url_key = None
         for key, value in input_dict.items():
             if isinstance(value, File):
-                file_key = key
-                file_path = value.file_path
-            if isinstance(value, Reader):
-                url_key = key
-                url = value.url
-        
-        if file_key is not None:
-            del input_dict[file_key]
-            input_dict["file_path"] = file_path
-        if url_key is not None:
-            del input_dict[url_key]
-            input_dict["url"] = url
+                input_dict[key] = value.file_path
+            elif isinstance(value, Reader):
+                input_dict[key] = value.url
         
         if len(flow_name.split("/")) > 2:
             version = flow_name.split("/")[-1]
