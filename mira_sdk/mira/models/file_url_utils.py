@@ -1,7 +1,7 @@
 import os
 import re
 
-class URL:
+class Reader:
     def __init__(self, url: str):
         pattern = r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$'
         if not re.match(pattern, url):

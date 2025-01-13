@@ -8,7 +8,7 @@ from ..flow import Flow
 from ..compound_flow import CompoundFlow
 from ..utils.util import split_name
 from ..integrations.composio import ComposioConfig
-from ..models.file_url_utils import File, URL
+from ..models.file_url_utils import File, Reader
 
 
 class FlowLoadError(Exception):
@@ -105,7 +105,7 @@ class FlowOperations:
             if isinstance(value, File):
                 file_key = key
                 file_path = value.file_path
-            if isinstance(value, URL):
+            if isinstance(value, Reader):
                 url_key = key
                 url = value.url
         
@@ -160,7 +160,7 @@ class FlowOperations:
             if isinstance(value, File):
                 file_key = key
                 file_path = value.file_path
-            if isinstance(value, URL):
+            if isinstance(value, Reader):
                 url_key = key
                 url = value.url
         
