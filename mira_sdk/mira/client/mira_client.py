@@ -99,22 +99,12 @@ class FlowOperations:
     #     return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version, flow.type.value)
 
     def test(self, flow: Flow | CompoundFlow, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
-        file_key = None
-        url_key = None
+        
         for key, value in input_dict.items():
             if isinstance(value, File):
-                file_key = key
-                file_path = value.file_path
+                input_dict[key] = value.file_path
             if isinstance(value, Reader):
-                url_key = key
-                url = value.url
-        
-        if file_key is not None:
-            del input_dict[file_key]
-            input_dict["file_path"] = file_path
-        if url_key is not None:
-            del input_dict[url_key]
-            input_dict["url"] = url
+                input_dict[key] = value.url
 
         if isinstance(flow, CompoundFlow):
             return self.console.run_flow(flow.config, input_dict, composio_config)
