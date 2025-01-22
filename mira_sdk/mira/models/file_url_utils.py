@@ -7,7 +7,7 @@ class Reader:
         if not re.match(pattern, url):
             raise ValueError("Invalid URL format")
         self.url = url
-    
+
     def __str__(self):
         return self.url
 
@@ -17,8 +17,17 @@ class File:
             raise ValueError(f"File path does not exist: {file_path}")
         if not os.path.isfile(file_path):
             raise ValueError(f"Path is not a file: {file_path}")
-            
+
         self.file_path = file_path
 
     def __str__(self):
         return self.file_path
+
+# class Image:
+#     def __init__(self, image_path: str):
+#         if not os.path.exists(image_path):
+#             raise ValueError(f"Image path does not exist: {image_path}")
+#         self.image_path = image_path
+
+#     def __str__(self):
+#         return self.image_path
