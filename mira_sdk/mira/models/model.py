@@ -7,11 +7,11 @@ class Model:
     name: str
 
     @classmethod
-    def tric(cls, model_name: str = "llama"):
+    def tric(cls, model_name: str = ""):
         """Quick creator for Tric models"""
-        return cls(provider="tric", name=model_name)
+        return cls(provider="", name=model_name)
 
     @classmethod
-    def anthropic(cls, model_name: str = "claude"):
+    def anthropic(cls, model_name: str = ""):
         """Quick creator for Anthropic models"""
-        return cls(provider="anthropic", name=model_name)
+        return cls(provider="", name=model_name)
