@@ -5,8 +5,9 @@ import yaml
 
 from .console import Console
 from ..flow import Flow
+from ..models.file import File
 from ..compound_flow import CompoundFlow
-from ..utils.util import split_name
+from ..utils.util import check_file_path, split_name
 from ..integrations.composio import ComposioConfig
 
 
@@ -98,9 +99,16 @@ class FlowOperations:
     #     return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version, flow.type.value)
 
     def test(self, flow: Flow | CompoundFlow, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
+        data = {"input": {}, "file_input": {}}
+        for key, value in input_dict.items():
+            if isinstance(value, File):
+                check_file_path(value.path)
+                data["file_input"][key] = value.path
+            else:
+                data["input"][key] = value
         if isinstance(flow, CompoundFlow):
-            return self.console.run_flow(flow.config, input_dict, composio_config)
-        return self.console.run_flow(flow.to_dict(), input_dict, composio_config)
+            return self.console.run_flow(flow.config, data, composio_config)
+        return self.console.run_flow(flow.to_dict(), data, composio_config)
 
     def get(self, flow_name: str) -> Flow:
         version = None
@@ -152,11 +160,7 @@ class KnowledgeOperations:
 
         org, dataset_name = split_name(dataset_name)
         if file_path is not None:
-            if not os.path.exists(file_path):
-                raise FileNotFoundError(f"The file {file_path} does not exist.")
-
-            if not os.access(file_path, os.R_OK):
-                raise PermissionError(f"The file {file_path} is not readable.")
+            check_file_path(file_path)
 
             max_size = 200 * 1024 * 1024  # 200MB in bytes
             if os.path.getsize(file_path) > max_size:

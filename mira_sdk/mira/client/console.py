@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 import requests
 import logging
@@ -90,16 +91,26 @@ class Console:
 
         return self._request(method="post", path=path, json_data=json_data, query_params=params)
 
-    def run_flow(self, flow_config, input_dict, composio_config):
+    def run_flow(self, flow_config, input_data, composio_config):
 
         path = f"v1/flows/flows/run"
-        json_data = {
-            "flow_config": flow_config,
-            "input": input_dict,
+        files = []
+        data = {
+                "flow_config": flow_config,
+                "input": input_data.get("input", {}),
+                "file_input": [],
+            }
+        for key, value in input_data.get("file_input", {}).items():
+            files.append((key, open(value, "rb")))
+            data["file_input"].append(key)
+            # files["files"].append(open(value, "rb"))
+        print(files)
+        data = {
+            "data": json.dumps(data)
         }
         if composio_config is not None:
-            json_data["composio_config"] = composio_config.dict()
-        return self._request(method="post", path=path, json_data=json_data)
+            data["composio_config"] = composio_config.dict()
+        return self._request(method="post", path=path, data=data, files=files)
 
     def get_flow(self, author_name, flow_name, version):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
