@@ -1,4 +1,5 @@
 from typing import Optional
+import json
 import requests
 import logging
 from mira_sdk.mira.constants import CONSOLE_BFF_URL
@@ -91,15 +92,29 @@ class Console:
         return self._request(method="post", path=path, json_data=json_data, query_params=params)
 
     def run_flow(self, flow_config, input_dict, composio_config):
-
         path = f"v1/flows/flows/run"
-        json_data = {
+        files = []
+        data = {
             "flow_config": flow_config,
-            "input": input_dict,
+            "input": input_dict.get("input", {}),
+            "file_input": []
         }
+
+        for key, value in input_dict.get("file_input", {}).items():
+            files.append((key, open(value, "rb")))
+            data['file_input'].append(key)
+
+        data = {
+            "data": json.dumps(data)
+        }
+
+        print("data is ", data)
+        print("files are ", files)
+
         if composio_config is not None:
-            json_data["composio_config"] = composio_config.dict()
-        return self._request(method="post", path=path, json_data=json_data)
+            data["composio_config"] = composio_config.dict()
+
+        return self._request(method="post", path=path, data=data, files=files)
 
     def get_flow(self, author_name, flow_name, version):
         path = f"v1/flows/flows/{author_name}/{flow_name}"
