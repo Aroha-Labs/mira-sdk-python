@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="mira_sdk",  # Keep underscore here for Python import
-    version='0.1.13',  # Match version with pyproject.toml
+    version='0.1.16',  # Match version with pyproject.toml
     description="A Python SDK for the Mira API",
     long_description=open("README.md").read(),
     url="https://github.com/Aroha-Labs/mira-sdk-python",
