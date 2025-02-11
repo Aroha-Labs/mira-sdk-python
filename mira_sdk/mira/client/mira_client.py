@@ -99,16 +99,20 @@ class FlowOperations:
     #     return self.console.execute_flow(flow.org, flow.name, input_dict, flow.version, flow.type.value)
 
     def test(self, flow: Flow | CompoundFlow, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
+
+        data = {"input" : {}, "file_input" : {}}
         
         for key, value in input_dict.items():
             if isinstance(value, File):
-                input_dict[key] = value.file_path
+                data["file_input"][key] = value.file_path
             elif isinstance(value, Reader):
-                input_dict[key] = value.url
-
+                data["input"][key] = value.url
+            else:
+                data["input"][key] = value
+                
         if isinstance(flow, CompoundFlow):
-            return self.console.run_flow(flow.config, input_dict, composio_config)
-        return self.console.run_flow(flow.to_dict(), input_dict, composio_config)
+            return self.console.run_flow(flow.config, data, composio_config)
+        return self.console.run_flow(flow.to_dict(), data, composio_config)
 
     def get(self, flow_name: str) -> Flow:
         version = None
@@ -144,16 +148,20 @@ class FlowOperations:
 
     def execute(self, flow_name: str, input_dict: dict, composio_config: Optional[ComposioConfig] = None):
         version = None
+
+        data = {"input" : {}, "file_input" : {}}
         for key, value in input_dict.items():
             if isinstance(value, File):
-                input_dict[key] = value.file_path
+                data["file_input"][key] = value.file_path
             elif isinstance(value, Reader):
-                input_dict[key] = value.url
+                data["input"][key] = value.url
+            else:
+                data["input"][key] = value
         
         if len(flow_name.split("/")) > 2:
             version = flow_name.split("/")[-1]
         org, name = split_name(flow_name)
-        return self.console.execute_flow(org, name, input_dict, version, "PRIMITIVE", composio_config)
+        return self.console.execute_flow(org, name, data, version, "PRIMITIVE", composio_config)
 
 
 class KnowledgeOperations:
